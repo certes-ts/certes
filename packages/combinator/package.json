@@ -27,11 +27,26 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
+    "./a": "./dist/a/index.js",
+    "./b": "./dist/b/index.js",
+    "./bl": "./dist/bl/index.js",
+    "./c": "./dist/c/index.js",
+    "./i": "./dist/i/index.js",
+    "./k": "./dist/k/index.js",
+    "./ki": "./dist/ki/index.js",
+    "./phi": "./dist/phi/index.js",
+    "./psi": "./dist/psi/index.js",
+    "./q": "./dist/q/index.js",
+    "./s": "./dist/s/index.js",
+    "./th": "./dist/th/index.js",
+    "./v": "./dist/v/index.js",
+    "./w": "./dist/w/index.js",
     "./package.json": "./package.json"
   },
   "scripts": {
     "bench": "pnpm bench --run",
     "build": "pnpm tsdown",
+    "format": "pnpm biome check --write",
     "lint": "pnpm biome lint",
     "test": "pnpm vitest --dir=src",
     "test:types": "pnpm vitest --typecheck"
