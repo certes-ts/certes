@@ -1,0 +1,14 @@
+export { A, apply } from './a';
+export { B, compose } from './b';
+export { BL } from './bl';
+export { C, flip } from './c';
+export { I, identity } from './i';
+export { constant, K } from './k';
+export { KI, second } from './ki';
+export { fork, Phi } from './phi';
+export { on, Psi } from './psi';
+export { pipe, Q } from './q';
+export { S, substitution } from './s';
+export { applyTo, Th } from './th';
+export { pair, V } from './v';
+export { duplication, W } from './w';

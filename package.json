@@ -19,6 +19,7 @@
     "changeset:version": "pnpm exec changeset version",
     "deps:format-packages": "pnpm syncpack format",
     "deps:mismatch-fix": "pnpm syncpack fix-mismatches",
+    "format": "turbo format",
     "lint": "turbo lint",
     "lint:fs": "pnpm ls-lint",
     "test": "turbo test"
