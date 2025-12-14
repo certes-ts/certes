@@ -1,0 +1,30 @@
+ls:
+  .dir: kebabcase | screamingsnakecase
+  .md: kebabcase | screamingsnakecase
+  .js: kebabcase
+  .jsx: kebabcase
+  .mjs: kebabcase
+  .cjs: kebabcase
+  .ts: kebabcase
+  .tsx: kebabcase
+  .*.js: kebabcase
+  .*.jsx: kebabcase
+  .*.mjs: kebabcase
+  .*.cjs: kebabcase
+  .*.ts: kebabcase
+  .*.tsx: kebabcase
+
+ignore:
+  - .changeset
+  - .git
+  - .github
+  - .turbo
+  - .vscode
+  - .windsurf
+  - '**/.turbo'
+  - '**/__*__'
+  - '**/build'
+  - '**/coverage'
+  - '**/dist'
+  - '**/documentation'
+  - '**/node_modules'
