@@ -185,4 +185,4 @@ MIT
 
 ## Contributing
 
-Part of the [@certes](https://github.com/certes/certes) monorepo. See main repository for contribution guidelines.
+Part of the [@certes](https://github.com/certes-ts/certes) monorepo. See main repository for contribution guidelines.

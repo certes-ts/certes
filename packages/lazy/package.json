@@ -30,7 +30,7 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "bench": "pnpm bench --run",
+    "bench": "pnpm vitest bench --run",
     "build": "pnpm tsdown",
     "format": "pnpm biome check --write",
     "lint": "pnpm biome lint",

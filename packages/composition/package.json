@@ -27,10 +27,16 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
+    "./compose": "./dist/compose/index.js",
+    "./compose-async": "./dist/compose-async/index.js",
+    "./curry": "./dist/curry/index.js",
+    "./pipe": "./dist/pipe/index.js",
+    "./pipe-async": "./dist/pipe-async/index.js",
+    "./types": "./dist/types.js",
     "./package.json": "./package.json"
   },
   "scripts": {
-    "bench": "pnpm bench --run",
+    "bench": "pnpm vitest bench --run",
     "build": "pnpm tsdown",
     "format": "pnpm biome check --write",
     "lint": "pnpm biome lint",
