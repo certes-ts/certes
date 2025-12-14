@@ -1,11 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/package",
-  "name": "@certes/core",
-  "title": "Certes Core",
-  "description": "A set of baseline functions in JavaScript.",
+  "name": "@certes/common",
+  "title": "Certes Common",
+  "description": "A set of common baseline functions in JavaScript.",
   "author": "https://github.com/certes-ts",
   "keywords": [],
-  "subPath": "packages/core",
+  "subPath": "packages/common",
   "version": "0.0.0",
   "private": false,
   "license": "MIT",
@@ -27,6 +27,11 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
+    "./lookup": "./dist/lookup/index.js",
+    "./noop": "./dist/noop/index.js",
+    "./once": "./dist/once/index.js",
+    "./range": "./dist/range/index.js",
+    "./tap": "./dist/tap/index.js",
     "./package.json": "./package.json"
   },
   "scripts": {
@@ -36,6 +41,9 @@
     "lint": "pnpm biome lint",
     "test": "pnpm vitest --dir=src",
     "test:types": "pnpm vitest --typecheck"
+  },
+  "dependencies": {
+    "@certes/combinator": "workspace:*"
   },
   "devDependencies": {
     "@vitest/coverage-istanbul": "^4.0.8",
