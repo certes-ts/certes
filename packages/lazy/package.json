@@ -26,7 +26,35 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
+    "./generators/generate": "./dist/generators/generate/index.js",
+    "./generators/iterate": "./dist/generators/iterate/index.js",
+    "./generators/range": "./dist/generators/range/index.js",
+    "./generators/repeat": "./dist/generators/repeat/index.js",
+    "./helpers/collect": "./dist/helpers/collect/index.js",
+    "./helpers/replicate": "./dist/helpers/replicate/index.js",
+    "./helpers/takeEager": "./dist/helpers/takeEager/index.js",
+    "./iterators/chunk": "./dist/iterators/chunk/index.js",
+    "./iterators/concat": "./dist/iterators/concat/index.js",
+    "./iterators/drop": "./dist/iterators/drop/index.js",
+    "./iterators/drop-while": "./dist/iterators/drop-while/index.js",
+    "./iterators/enumerate": "./dist/iterators/enumerate/index.js",
+    "./iterators/filter": "./dist/iterators/filter/index.js",
+    "./iterators/flat-map": "./dist/iterators/flat-map/index.js",
+    "./iterators/flatten": "./dist/iterators/flatten/index.js",
+    "./iterators/interleave": "./dist/iterators/interleave/index.js",
+    "./iterators/intersperse": "./dist/iterators/intersperse/index.js",
+    "./iterators/map": "./dist/iterators/map/index.js",
+    "./iterators/prepend": "./dist/iterators/prepend/index.js",
+    "./iterators/scan": "./dist/iterators/scan/index.js",
+    "./iterators/slice": "./dist/iterators/slice/index.js",
+    "./iterators/take": "./dist/iterators/take/index.js",
+    "./iterators/take-while": "./dist/iterators/take-while/index.js",
+    "./iterators/tap": "./dist/iterators/tap/index.js",
+    "./iterators/unique": "./dist/iterators/unique/index.js",
+    "./iterators/unique-by": "./dist/iterators/unique-by/index.js",
+    "./iterators/zip": "./dist/iterators/zip/index.js",
+    "./iterators/zip-with": "./dist/iterators/zip-with/index.js",
+    "./types": "./dist/types.js",
     "./package.json": "./package.json"
   },
   "scripts": {
@@ -36,6 +64,9 @@
     "lint": "pnpm biome lint",
     "test": "pnpm vitest --dir=src",
     "test:types": "pnpm vitest --typecheck"
+  },
+  "dependencies": {
+    "@certes/composition": "workspace:*"
   },
   "devDependencies": {
     "@vitest/coverage-istanbul": "^4.0.8",
