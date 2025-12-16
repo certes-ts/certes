@@ -16,7 +16,7 @@
  * collect(zip(['a', 'b', 'c'])([1, 2, 3])); // [[1, 'a'], [2, 'b'], [3, 'c']]
  */
 export const zip =
-  <U>(other: Iterable<U>) =>
+  <U>(other: Iterable<U>): (<T>(iter: Iterable<T>) => Iterable<[T, U]>) =>
   <T>(iter: Iterable<T>): Iterable<[T, U]> => ({
     *[Symbol.iterator]() {
       const iterA = iter[Symbol.iterator]();

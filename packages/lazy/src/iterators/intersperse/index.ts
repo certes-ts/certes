@@ -12,7 +12,7 @@
  * collect(intersperse(0)([1, 2, 3])); // [1, 0, 2, 0, 3]
  */
 export const intersperse =
-  <T>(separator: T) =>
+  <T>(separator: T): ((iter: Iterable<T>) => Iterable<T>) =>
   (iter: Iterable<T>): Iterable<T> => ({
     *[Symbol.iterator]() {
       let first = true;

@@ -17,7 +17,7 @@ import type { Predicate } from '@/types';
  * collect(dropWhile((x: number) => x < 3)([1, 2, 3, 4, 1])); // [3, 4, 1]
  */
 export const dropWhile =
-  <T>(pred: Predicate<T>) =>
+  <T>(pred: Predicate<T>): ((iter: Iterable<T>) => Iterable<T>) =>
   (iter: Iterable<T>): Iterable<T> => ({
     *[Symbol.iterator]() {
       let idx = 0;

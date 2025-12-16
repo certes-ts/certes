@@ -11,6 +11,7 @@
  * Forces evaluation of the entire iterable. Do not use on infinite iterables.
  *
  * @example
- * collect(take(3)(range(1, 100))); // [1, 2, 3]
+ * collect([1, 2, 3]); // [1, 2, 3]
+ * collect(new Set([1, 2, 2, 3])); // [1, 2, 3]
  */
 export const collect = <T>(iter: Iterable<T>): T[] => [...iter];

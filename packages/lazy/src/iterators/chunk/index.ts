@@ -11,9 +11,14 @@
  * @example
  * collect(chunk(2)([1, 2, 3, 4, 5])); // [[1, 2], [3, 4], [5]]
  */
-export const chunk =
-  (size: number) =>
-  <T>(iter: Iterable<T>): Iterable<T[]> => ({
+export const chunk = (
+  size: number,
+): (<T>(iter: Iterable<T>) => Iterable<T[]>) => {
+  if (!Number.isSafeInteger(size) || size <= 0) {
+    throw new TypeError('chunk() requires size to be a positive safe integer');
+  }
+
+  return <T>(iter: Iterable<T>): Iterable<T[]> => ({
     *[Symbol.iterator]() {
       let batch: T[] = [];
 
@@ -30,3 +35,4 @@ export const chunk =
       }
     },
   });
+};

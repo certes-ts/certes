@@ -26,6 +26,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    ".": "./dist/index.js",
     "./generators/generate": "./dist/generators/generate/index.js",
     "./generators/iterate": "./dist/generators/iterate/index.js",
     "./generators/range": "./dist/generators/range/index.js",

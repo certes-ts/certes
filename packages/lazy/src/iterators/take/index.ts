@@ -13,18 +13,26 @@
  * @example
  * collect(take(3)([1, 2, 3, 4, 5])); // [1, 2, 3]
  */
-export const take =
-  (n: number) =>
-  <T>(iter: Iterable<T>): Iterable<T> => ({
+export const take = (n: number): (<T>(iter: Iterable<T>) => Iterable<T>) => {
+  if (!Number.isSafeInteger(n) || n < 0) {
+    throw new TypeError('take() requires n to be a non-negative safe integer');
+  }
+
+  return <T>(iter: Iterable<T>): Iterable<T> => ({
     *[Symbol.iterator]() {
+      if (n === 0) {
+        return;
+      }
+
       let count = 0;
 
       for (const item of iter) {
-        if (count++ >= n) {
-          break;
-        }
-
         yield item;
+
+        if (++count >= n) {
+          return;
+        }
       }
     },
   });
+};

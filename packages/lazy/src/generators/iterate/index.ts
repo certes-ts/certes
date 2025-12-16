@@ -23,7 +23,7 @@
  * const fibs = iterate(([a, b]: [number, number]) => [b, a + b] as [number, number])([0, 1]);
  * [...take(7)(lazyMap(([a]: [number, number]) => a)(fibs))]; // [0, 1, 1, 2, 3, 5, 8]
  */
-export const iterate = <T>(fn: (x: T) => T) => {
+export const iterate = <T>(fn: (x: T) => T): ((seed: T) => Iterable<T>) => {
   if (typeof fn !== 'function') {
     throw new TypeError('iterate() requires fn to be a function');
   }

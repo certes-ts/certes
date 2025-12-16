@@ -18,7 +18,10 @@
  * collect(zipWith([10, 20, 30], (a, b) => a + b)([1, 2, 3])); // [11, 22, 33]
  */
 export const zipWith =
-  <T, U, R>(other: Iterable<U>, fn: (a: T, b: U) => R) =>
+  <T, U, R>(
+    other: Iterable<U>,
+    fn: (a: T, b: U) => R,
+  ): ((iter: Iterable<T>) => Iterable<R>) =>
   (iter: Iterable<T>): Iterable<R> => ({
     *[Symbol.iterator]() {
       const iterA = iter[Symbol.iterator]();

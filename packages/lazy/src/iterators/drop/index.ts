@@ -11,9 +11,12 @@
  * @example
  * collect(drop(2)([1, 2, 3, 4, 5])); // [3, 4, 5]
  */
-export const drop =
-  (n: number) =>
-  <T>(iter: Iterable<T>): Iterable<T> => ({
+export const drop = (n: number): (<T>(iter: Iterable<T>) => Iterable<T>) => {
+  if (!Number.isSafeInteger(n) || n < 0) {
+    throw new TypeError('drop() requires n to be a non-negative safe integer');
+  }
+
+  return <T>(iter: Iterable<T>): Iterable<T> => ({
     *[Symbol.iterator]() {
       let count = 0;
 
@@ -24,3 +27,4 @@ export const drop =
       }
     },
   });
+};

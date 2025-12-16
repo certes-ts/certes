@@ -12,9 +12,23 @@
  * @example
  * collect(slice(1, 4)([0, 1, 2, 3, 4, 5])); // [1, 2, 3]
  */
-export const slice =
-  (start: number, end?: number) =>
-  <T>(iter: Iterable<T>): Iterable<T> => ({
+export const slice = (
+  start: number,
+  end?: number,
+): (<T>(iter: Iterable<T>) => Iterable<T>) => {
+  if (!Number.isSafeInteger(start) || start < 0) {
+    throw new TypeError(
+      'slice() requires start to be a non-negative safe integer',
+    );
+  }
+
+  if (end !== undefined && (!Number.isSafeInteger(end) || end < 0)) {
+    throw new TypeError(
+      'slice() requires end to be a non-negative safe integer',
+    );
+  }
+
+  return <T>(iter: Iterable<T>): Iterable<T> => ({
     *[Symbol.iterator]() {
       let idx = 0;
       for (const item of iter) {
@@ -30,3 +44,4 @@ export const slice =
       }
     },
   });
+};

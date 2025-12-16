@@ -18,7 +18,7 @@ import type { Predicate } from '@/types';
  * collect(evens([1, 2, 3, 4, 5])); // [2, 4]
  */
 export const filter =
-  <T>(pred: Predicate<T>) =>
+  <T>(pred: Predicate<T>): ((iter: Iterable<T>) => Iterable<T>) =>
   (iter: Iterable<T>): Iterable<T> => ({
     *[Symbol.iterator]() {
       let idx = 0;

@@ -17,7 +17,7 @@ import type { Predicate } from '@/types';
  * collect(takeWhile((x: number) => x < 4)([1, 2, 3, 4, 5])); // [1, 2, 3]
  */
 export const takeWhile =
-  <T>(pred: Predicate<T>) =>
+  <T>(pred: Predicate<T>): ((iter: Iterable<T>) => Iterable<T>) =>
   (iter: Iterable<T>): Iterable<T> => ({
     *[Symbol.iterator]() {
       let idx = 0;

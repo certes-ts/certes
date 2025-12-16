@@ -13,7 +13,7 @@
  * collect(concat([4, 5], [6])([1, 2, 3])); // [1, 2, 3, 4, 5, 6]
  */
 export const concat =
-  <T>(...others: Iterable<T>[]) =>
+  <T>(...others: Iterable<T>[]): ((iter: Iterable<T>) => Iterable<T>) =>
   (iter: Iterable<T>): Iterable<T> => ({
     *[Symbol.iterator]() {
       yield* iter;

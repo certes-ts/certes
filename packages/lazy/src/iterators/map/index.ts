@@ -19,7 +19,7 @@ import type { MapFn } from '@/types';
  * collect(double([1, 2, 3])); // [2, 4, 6]
  */
 export const map =
-  <T, R>(fn: MapFn<T, R>) =>
+  <T, R>(fn: MapFn<T, R>): ((iter: Iterable<T>) => Iterable<R>) =>
   (iter: Iterable<T>): Iterable<R> => ({
     *[Symbol.iterator]() {
       let idx = 0;

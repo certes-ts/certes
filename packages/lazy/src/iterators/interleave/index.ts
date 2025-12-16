@@ -15,28 +15,23 @@
  * collect(interleave([4, 5, 6])([1, 2, 3])); // [1, 4, 2, 5, 3, 6]
  */
 export const interleave =
-  <T>(other: Iterable<T>) =>
+  <T>(other: Iterable<T>): ((iter: Iterable<T>) => Iterable<T>) =>
   (iter: Iterable<T>): Iterable<T> => ({
-    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Shhhh
     *[Symbol.iterator]() {
       const iterA = iter[Symbol.iterator]();
       const iterB = other[Symbol.iterator]();
+      let a = iterA.next();
+      let b = iterB.next();
 
-      while (true) {
-        const a = iterA.next();
-
+      while (!(a.done && b.done)) {
         if (!a.done) {
           yield a.value;
+          a = iterA.next();
         }
-
-        const b = iterB.next();
 
         if (!b.done) {
           yield b.value;
-        }
-
-        if (a.done && b.done) {
-          break;
+          b = iterB.next();
         }
       }
     },

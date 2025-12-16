@@ -16,7 +16,7 @@
  * collect(logged([1, 2, 3])); // logs 1, 2, 3; returns [1, 2, 3]
  */
 export const tap =
-  <T>(fn: (x: T, idx?: number) => void) =>
+  <T>(fn: (x: T, idx?: number) => void): ((iter: Iterable<T>) => Iterable<T>) =>
   (iter: Iterable<T>): Iterable<T> => ({
     *[Symbol.iterator]() {
       let idx = 0;

@@ -19,7 +19,7 @@ import type { MapFn } from '@/types';
  * collect(duplicate([1, 2, 3])); // [1, 1, 2, 2, 3, 3]
  */
 export const flatMap =
-  <T, R>(fn: MapFn<T, Iterable<R>>) =>
+  <T, R>(fn: MapFn<T, Iterable<R>>): ((iter: Iterable<T>) => Iterable<R>) =>
   (iter: Iterable<T>): Iterable<R> => ({
     *[Symbol.iterator]() {
       let idx = 0;

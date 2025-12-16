@@ -8,7 +8,9 @@
  * @returns A new iterable with duplicates removed (preserving first occurrence)
  *
  * @remarks
- * Uses a `Set` internally; memory grows with unique element count.
+ * Uses a `Set` internally; memory grows linearly with unique element count.
+ * For very large iterables with high cardinality, consider streaming
+ * alternatives or bounded caches.
  *
  * @example
  * collect(unique([1, 2, 1, 3, 2, 4])); // [1, 2, 3, 4]

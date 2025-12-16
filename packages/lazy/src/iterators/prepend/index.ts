@@ -12,7 +12,7 @@
  * collect(prepend([1, 2], [3])([4, 5, 6])); // [1, 2, 3, 4, 5, 6]
  */
 export const prepend =
-  <T>(...others: Iterable<T>[]) =>
+  <T>(...others: Iterable<T>[]): ((iter: Iterable<T>) => Iterable<T>) =>
   (iter: Iterable<T>): Iterable<T> => ({
     *[Symbol.iterator]() {
       for (const other of others) {

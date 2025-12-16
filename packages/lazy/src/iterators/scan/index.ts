@@ -19,7 +19,10 @@ import type { Accumulator } from '@/types';
  * collect(scan((acc, x) => acc + x, 0)([1, 2, 3, 4])); // [1, 3, 6, 10]
  */
 export const scan =
-  <T, A>(reducer: Accumulator<T, A>, initial: A) =>
+  <T, A>(
+    reducer: Accumulator<T, A>,
+    initial: A,
+  ): ((iter: Iterable<T>) => Iterable<A>) =>
   (iter: Iterable<T>): Iterable<A> => ({
     *[Symbol.iterator]() {
       let acc = initial;
