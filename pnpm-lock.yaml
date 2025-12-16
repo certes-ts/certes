@@ -89,6 +89,13 @@ importers:
         version: 4.0.15
 
   packages/lazy:
+    dependencies:
+      '@certes/composition':
+        specifier: workspace:*
+        version: link:../composition
+      '@certes/list':
+        specifier: workspace:*
+        version: link:../list
     devDependencies:
       '@vitest/coverage-istanbul':
         specifier: ^4.0.8
