@@ -43,6 +43,7 @@ sumOfEvens(nums);
 **`map<T, R>(fn: (x: T, idx?: number) => R) => (arr: T[]) => R[]`**
 
 Maps over an array, applying the function to each element.
+
 ```typescript
 const square = (x: number) => x * x;
 map(square)([1, 2, 3]);
@@ -52,15 +53,36 @@ map(square)([1, 2, 3]);
 **`filter<T>(predicate: (x: T, idx?: number) => boolean) => (arr: T[]) => T[]`**
 
 Returns elements that satisfy the predicate.
+
 ```typescript
 const isPositive = (x: number) => x > 0;
 filter(isPositive)([-1, 0, 1, 2]);
 // [1, 2]
 ```
 
+**`flatMap<T, R>(fn: (x: T, idx?: number) => R[]) => (arr: T[]) => R[]`**
+
+Maps each element to an array and flattens the result.
+
+```typescript
+const duplicate = (x: number) => [x, x];
+flatMap(duplicate)([1, 2, 3]);
+// [1, 1, 2, 2, 3, 3]
+```
+
+**`flatten<T>(arr: T[][]) => T[]`**
+
+Flattens a nested array by one level.
+
+```typescript
+flatten([[1, 2], [3, 4], [5]]);
+// [1, 2, 3, 4, 5]
+```
+
 **`reverse<T>(arr: T[]) => T[]`**
 
 Reverses array order.
+
 ```typescript
 reverse([1, 2, 3, 4]);
 // [4, 3, 2, 1]
@@ -71,6 +93,7 @@ reverse([1, 2, 3, 4]);
 **`reduce<T, R>(fn: (acc: R, x: T) => R) => (init: R) => (arr: T[]) => R`**
 
 Left-to-right reduction with accumulator.
+
 ```typescript
 const multiply = (acc: number, x: number) => acc * x;
 reduce(multiply)(1)([2, 3, 4]);
@@ -80,6 +103,7 @@ reduce(multiply)(1)([2, 3, 4]);
 **`reduceRight<T, R>(fn: (acc: R, x: T) => R) => (init: R) => (arr: T[]) => R`**
 
 Right-to-left reduction with accumulator.
+
 ```typescript
 const concat = (acc: string, x: string) => `${acc}${x}`;
 reduceRight(concat)('')(['a', 'b', 'c']);
@@ -91,6 +115,7 @@ reduceRight(concat)('')(['a', 'b', 'c']);
 **`find<T>(predicate: (x: T, idx?: number) => boolean) => (arr: T[]) => T | null`**
 
 Returns first element matching predicate, or `null`.
+
 ```typescript
 find((x: number) => x > 3)([1, 2, 3, 4, 5]);
 // 4
@@ -99,6 +124,7 @@ find((x: number) => x > 3)([1, 2, 3, 4, 5]);
 **`findIndex<T>(predicate: (x: T, idx?: number) => boolean) => (arr: T[]) => number`**
 
 Returns index of first match, or `-1`.
+
 ```typescript
 findIndex((x: number) => x > 3)([1, 2, 3, 4, 5]);
 // 3
@@ -107,6 +133,7 @@ findIndex((x: number) => x > 3)([1, 2, 3, 4, 5]);
 **`findLast<T>(predicate: (x: T, idx?: number) => boolean) => (arr: T[]) => T | null`**
 
 Returns last element matching predicate, or `null`.
+
 ```typescript
 findLast((x: number) => !(x & 1))([1, 2, 3, 4, 5]);
 // 4
@@ -115,6 +142,7 @@ findLast((x: number) => !(x & 1))([1, 2, 3, 4, 5]);
 **`findLastIndex<T>(predicate: (x: T, idx?: number) => boolean) => (arr: T[]) => number`**
 
 Returns index of last match, or `-1`.
+
 ```typescript
 findLastIndex((x: number) => !(x & 1))([1, 2, 3, 4, 5]);
 // 3
@@ -123,6 +151,7 @@ findLastIndex((x: number) => !(x & 1))([1, 2, 3, 4, 5]);
 **`includes<T>(x: T) => (arr: T[]) => boolean`**
 
 Determines if array contains element (strict equality).
+
 ```typescript
 includes(3)([1, 2, 3, 4, 5]);
 // true
@@ -131,6 +160,7 @@ includes(3)([1, 2, 3, 4, 5]);
 **`indexOf<T>(x: T) => (arr: T[]) => number`**
 
 Returns first index of element, or `-1`.
+
 ```typescript
 indexOf(3)([1, 2, 3, 4, 5]);
 // 2
@@ -141,6 +171,7 @@ indexOf(3)([1, 2, 3, 4, 5]);
 **`every<T>(comparator: (x: T) => boolean) => (arr: T[]) => boolean`**
 
 Tests if all elements satisfy comparator.
+
 ```typescript
 every((x: number) => x > 0)([1, 2, 3]);
 // true
@@ -149,6 +180,7 @@ every((x: number) => x > 0)([1, 2, 3]);
 **`some<T>(comparator: (x: T) => boolean) => (arr: T[]) => boolean`**
 
 Tests if any element satisfies comparator.
+
 ```typescript
 some((x: number) => x > 3)([1, 2, 3, 4, 5]);
 // true
@@ -159,6 +191,7 @@ some((x: number) => x > 3)([1, 2, 3, 4, 5]);
 **`concat<T>(first: T[]) => (second: T[]) => T[]`**
 
 Concatenates two arrays.
+
 ```typescript
 concat([1, 2])([3, 4]);
 // [1, 2, 3, 4]
@@ -167,6 +200,7 @@ concat([1, 2])([3, 4]);
 **`push<T>(arr: T[]) => (x: T) => T[]`**
 
 Returns new array with element appended.
+
 ```typescript
 push([1, 2, 3])(4);
 // [1, 2, 3, 4]
@@ -175,6 +209,7 @@ push([1, 2, 3])(4);
 **`unshift<T>(arr: T[]) => (x: T) => T[]`**
 
 Returns new array with element prepended.
+
 ```typescript
 unshift([2, 3, 4])(1);
 // [1, 2, 3, 4]
@@ -183,6 +218,7 @@ unshift([2, 3, 4])(1);
 **`slice(start: number) => (end: number) => <T>(arr: T[]) => T[]`**
 
 Returns slice from `start` (inclusive) to `end` (exclusive).
+
 ```typescript
 slice(1)(3)([0, 1, 2, 3, 4]);
 // [1, 2]
@@ -191,6 +227,7 @@ slice(1)(3)([0, 1, 2, 3, 4]);
 **`shift<T>(arr: T[]) => [T | null, T[]]`**
 
 Returns tuple of first element (head) and remaining elements (tail).
+
 ```typescript
 shift([1, 2, 3, 4]);
 // [1, [2, 3, 4]]
@@ -204,6 +241,7 @@ shift([]);
 ### Currying
 
 Functions are curried to enable partial application and composition:
+
 ```typescript
 import { filter, map, reduce, every } from '@certes/list';
 
@@ -226,6 +264,7 @@ const processNumbers = (arr: number[]) => {
 ### Purity
 
 No function mutates its input or produces side effects:
+
 ```typescript
 const original = [1, 2, 3];
 const reversed = reverse(original);
@@ -235,6 +274,7 @@ console.log(reversed); // [3, 2, 1]
 ```
 
 ## Type Utilities
+
 ```typescript
 export type ArrayElementType<T> = T extends (infer E)[] ? E : T;
 export type Comparator<T> = (x: T) => boolean;
