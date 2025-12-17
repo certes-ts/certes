@@ -5,6 +5,8 @@ export { find } from './find';
 export { findIndex } from './find-index';
 export { findLast } from './find-last';
 export { findLastIndex } from './find-last-index';
+export { flatMap } from './flat-map';
+export { flatten } from './flatten';
 export { includes } from './includes';
 export { indexOf } from './index-of';
 export { map } from './map';

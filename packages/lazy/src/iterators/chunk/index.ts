@@ -24,6 +24,7 @@ export const chunk = (
 
       for (const item of iter) {
         batch.push(item);
+
         if (batch.length === size) {
           yield batch;
           batch = [];
