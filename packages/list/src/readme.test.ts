@@ -45,7 +45,7 @@ describe('@certes/list - README Examples', () => {
       const sum = reduce((acc: number, x: number) => acc + x)(0);
       const sumOfEvens = (arr: number[]) => sum(filterEven(arr));
 
-      expect(sumOfEvens(nums)).toBe(6);
+      expect(sumOfEvens(nums)).toEqual(6);
     });
   });
 
@@ -100,7 +100,7 @@ describe('@certes/list - README Examples', () => {
         const multiply = (acc: number, x: number) => acc * x;
         const result = reduce(multiply)(1)([2, 3, 4]);
 
-        expect(result).toBe(24);
+        expect(result).toEqual(24);
       });
     });
 
@@ -109,7 +109,7 @@ describe('@certes/list - README Examples', () => {
         const concat = (acc: string, x: string) => `${acc}${x}`;
         const result = reduceRight(concat)('')(['a', 'b', 'c']);
 
-        expect(result).toBe('cba');
+        expect(result).toEqual('cba');
       });
     });
   });
@@ -119,7 +119,7 @@ describe('@certes/list - README Examples', () => {
       it('should return first element matching predicate', () => {
         const result = find((x: number) => x > 3)([1, 2, 3, 4, 5]);
 
-        expect(result).toBe(4);
+        expect(result).toEqual(4);
       });
     });
 
@@ -127,7 +127,7 @@ describe('@certes/list - README Examples', () => {
       it('should return index of first match', () => {
         const result = findIndex((x: number) => x > 3)([1, 2, 3, 4, 5]);
 
-        expect(result).toBe(3);
+        expect(result).toEqual(3);
       });
     });
 
@@ -135,7 +135,7 @@ describe('@certes/list - README Examples', () => {
       it('should return last even number', () => {
         const result = findLast((x: number) => !(x & 1))([1, 2, 3, 4, 5]);
 
-        expect(result).toBe(4);
+        expect(result).toEqual(4);
       });
     });
 
@@ -143,7 +143,7 @@ describe('@certes/list - README Examples', () => {
       it('should return index of last even number', () => {
         const result = findLastIndex((x: number) => !(x & 1))([1, 2, 3, 4, 5]);
 
-        expect(result).toBe(3);
+        expect(result).toEqual(3);
       });
     });
 
@@ -151,7 +151,7 @@ describe('@certes/list - README Examples', () => {
       it('should determine if array contains element', () => {
         const result = includes(3)([1, 2, 3, 4, 5]);
 
-        expect(result).toBe(true);
+        expect(result).toEqual(true);
       });
     });
 
@@ -159,7 +159,7 @@ describe('@certes/list - README Examples', () => {
       it('should return first index of element', () => {
         const result = indexOf(3)([1, 2, 3, 4, 5]);
 
-        expect(result).toBe(2);
+        expect(result).toEqual(2);
       });
     });
   });
@@ -169,7 +169,7 @@ describe('@certes/list - README Examples', () => {
       it('should test if all elements are positive', () => {
         const result = every((x: number) => x > 0)([1, 2, 3]);
 
-        expect(result).toBe(true);
+        expect(result).toEqual(true);
       });
     });
 
@@ -177,7 +177,7 @@ describe('@certes/list - README Examples', () => {
       it('should test if any element is greater than 3', () => {
         const result = some((x: number) => x > 3)([1, 2, 3, 4, 5]);
 
-        expect(result).toBe(true);
+        expect(result).toEqual(true);
       });
     });
   });
@@ -249,7 +249,7 @@ describe('@certes/list - README Examples', () => {
       const sumPositive = (arr: number[]) =>
         reduce((a: number, b: number) => a + b)(0)(filterPositive(arr));
 
-      expect(sumPositive([-1, 2, -3, 4, 5])).toBe(11);
+      expect(sumPositive([-1, 2, -3, 4, 5])).toEqual(11);
     });
 
     it('should enable pipeline-style composition', () => {
@@ -262,8 +262,8 @@ describe('@certes/list - README Examples', () => {
         return every((x: number) => x < 100)(doubled);
       };
 
-      expect(processNumbers([1, 2, 3, 4, 5])).toBe(true);
-      expect(processNumbers([1, 2, 50, 60])).toBe(false);
+      expect(processNumbers([1, 2, 3, 4, 5])).toEqual(true);
+      expect(processNumbers([1, 2, 50, 60])).toEqual(false);
     });
   });
 

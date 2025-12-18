@@ -48,7 +48,11 @@ importers:
         specifier: ^4.0.8
         version: 4.0.15
 
-  packages/composition:
+  packages/common:
+    dependencies:
+      '@certes/combinator':
+        specifier: workspace:*
+        version: link:../combinator
     devDependencies:
       '@vitest/coverage-istanbul':
         specifier: ^4.0.8
@@ -66,11 +70,7 @@ importers:
         specifier: ^4.0.8
         version: 4.0.15
 
-  packages/core:
-    dependencies:
-      '@certes/combinator':
-        specifier: workspace:*
-        version: link:../combinator
+  packages/composition:
     devDependencies:
       '@vitest/coverage-istanbul':
         specifier: ^4.0.8
@@ -93,9 +93,6 @@ importers:
       '@certes/composition':
         specifier: workspace:*
         version: link:../composition
-      '@certes/list':
-        specifier: workspace:*
-        version: link:../list
     devDependencies:
       '@vitest/coverage-istanbul':
         specifier: ^4.0.8
@@ -1621,6 +1618,7 @@ packages:
   tsdown@0.17.3:
     resolution: {integrity: sha512-bgLgTog+oyadDTr9SZ57jZtb+A4aglCjo3xgJrkCDxbzcQl2l2iDDr4b06XHSQHwyDNIhYFDgPRhuu1wL3pNsw==}
     engines: {node: '>=20.19.0'}
+    deprecated: Including an unexpected breaking change (copy behavior)
     hasBin: true
     peerDependencies:
       '@arethetypeswrong/core': ^0.18.1

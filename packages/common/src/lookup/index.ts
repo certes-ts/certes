@@ -27,7 +27,7 @@ import { identity } from '@certes/combinator/i';
  *   BAR: [255, 0, 255, 155],
  *   FIZZ: [230, 0, 0, 155],
  *   BUZZ: [0, 128, 0, 155],
- * };
+ * } as const;
  *
  * const colorLookup = lookup(colorTable, x => x ?? [128, 128, 128, 155]);
  *

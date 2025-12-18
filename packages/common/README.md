@@ -41,9 +41,10 @@ const statusCodes = {
   200: 'OK',
   404: 'Not Found',
   500: 'Internal Server Error',
-};
+} as const;
+type Statuses = typeof statusCodes[keyof typeof statusCodes];
 
-const getStatus = lookup(statusCodes, () => 'Unknown');
+const getStatus = lookup(statusCodes, (x: Statuses | undefined) => x ?? 'Unknown');
 
 getStatus(200); // 'OK'
 getStatus(999); // 'Unknown'
@@ -102,47 +103,6 @@ await initializeDatabase(); // Returns cached connection
 
 ---
 
-### `range`
-
-Creates a reusable iterable that yields integers from start to end (inclusive).
-
-**Type Signature**
-```typescript
-function range(start: number, end: number): Iterable;
-```
-
-**Parameters**
-- `start` - The start of the range (inclusive)
-- `end` - The end of the range (inclusive)
-
-**Returns**
-
-An iterable that can be used multiple times.
-
-**Example**
-```typescript
-import { range } from '@certes/common';
-
-// Basic iteration
-for (const i of range(0, 3)) {
-  console.log(i);
-}
-// 0, 1, 2, 3
-
-// Reusable
-const indices = range(1, 5);
-const squares = [...indices].map(x => x * x);
-const cubes = [...indices].map(x => x * x * x);
-
-// Negative ranges
-[...range(-2, 2)]; // [-2, -1, 0, 1, 2]
-
-// Backwards range (empty)
-[...range(5, 1)]; // []
-```
-
----
-
 ### `tap`
 
 Executes a function for its side effects and returns the input value unchanged. Useful for debugging and logging in functional pipelines.
@@ -162,7 +122,7 @@ A function that passes through its input value.
 **Example**
 ```typescript
 import { tap } from '@certes/common';
-import { pipe } from '@certes/combinator';
+import { pipe } from '@certes/composition';
 
 const processData = pipe(
   (x: string) => x.trim(),
