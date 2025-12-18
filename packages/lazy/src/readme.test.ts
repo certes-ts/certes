@@ -25,14 +25,14 @@ describe('@certes/lazy - README Examples', () => {
         collect,
       )(range(1, 1000));
 
-      expect(result).toEqual([4, 16, 36, 64, 100]);
+      expect(result).toStrictEqual([4, 16, 36, 64, 100]);
     });
 
     it('should create reusable iterables', () => {
       const evens = filter((x: number) => x % 2 === 0)([1, 2, 3, 4, 5, 6]);
 
-      expect([...evens]).toEqual([2, 4, 6]);
-      expect([...evens]).toEqual([2, 4, 6]); // Second iteration
+      expect([...evens]).toStrictEqual([2, 4, 6]);
+      expect([...evens]).toStrictEqual([2, 4, 6]); // Second iteration
     });
   });
 
@@ -40,35 +40,35 @@ describe('@certes/lazy - README Examples', () => {
     describe('generate', () => {
       it('should generate squares from index function', () => {
         const result = collect(take(5)(generate((i) => i * i)));
-        expect(result).toEqual([0, 1, 4, 9, 16]);
+        expect(result).toStrictEqual([0, 1, 4, 9, 16]);
       });
     });
 
     describe('iterate', () => {
       it('should generate powers of 2 by repeated application', () => {
         const result = collect(take(5)(iterate((x: number) => x * 2)(1)));
-        expect(result).toEqual([1, 2, 4, 8, 16]);
+        expect(result).toStrictEqual([1, 2, 4, 8, 16]);
       });
     });
 
     describe('range', () => {
       it('should create inclusive range of integers', () => {
         const result = [...range(1, 5)];
-        expect(result).toEqual([1, 2, 3, 4, 5]);
+        expect(result).toStrictEqual([1, 2, 3, 4, 5]);
       });
     });
 
     describe('repeat', () => {
       it('should infinitely repeat a value (with take)', () => {
         const result = collect(take(3)(repeat('x')));
-        expect(result).toEqual(['x', 'x', 'x']);
+        expect(result).toStrictEqual(['x', 'x', 'x']);
       });
     });
 
     describe('replicate', () => {
       it('should finitely repeat a value', () => {
         const result = [...replicate(4)(0)];
-        expect(result).toEqual([0, 0, 0, 0]);
+        expect(result).toStrictEqual([0, 0, 0, 0]);
       });
     });
   });
@@ -79,14 +79,14 @@ describe('@certes/lazy - README Examples', () => {
         const result = collect(
           scan((acc: number, x: number) => acc + x, 0)(range(1, 5)),
         );
-        expect(result).toEqual([1, 3, 6, 10, 15]);
+        expect(result).toStrictEqual([1, 3, 6, 10, 15]);
       });
     });
 
     describe('chunk', () => {
       it('should chunk into pairs', () => {
         const result = collect(chunk(2)(range(1, 6)));
-        expect(result).toEqual([
+        expect(result).toStrictEqual([
           [1, 2],
           [3, 4],
           [5, 6],
@@ -97,7 +97,7 @@ describe('@certes/lazy - README Examples', () => {
     describe('zip', () => {
       it('should zip two iterables', () => {
         const result = collect(zip(['a', 'b', 'c'])([1, 2, 3]));
-        expect(result).toEqual([
+        expect(result).toStrictEqual([
           [1, 'a'],
           [2, 'b'],
           [3, 'c'],
@@ -114,8 +114,8 @@ describe('@certes/lazy - README Examples', () => {
           collect,
         )(range(1, 100));
 
-        expect(result[0]).toEqual([6, 12, 18, 24, 30]);
-        expect(result[1]).toEqual([36, 42, 48, 54, 60]);
+        expect(result[0]).toStrictEqual([6, 12, 18, 24, 30]);
+        expect(result[1]).toStrictEqual([36, 42, 48, 54, 60]);
       });
     });
   });
@@ -153,7 +153,7 @@ describe('@certes/lazy - README Examples', () => {
         const firstThreeDoubled = compose(collect, mapDouble, takeThree);
 
         const result = firstThreeDoubled(range(1, 100));
-        expect(result).toEqual([2, 4, 6]);
+        expect(result).toStrictEqual([2, 4, 6]);
       });
     });
   });
@@ -165,7 +165,7 @@ describe('@certes/lazy - README Examples', () => {
       )([0, 1]);
 
       const result = collect(take(10)(map(([a]: [number, number]) => a)(fibs)));
-      expect(result).toEqual([0, 1, 1, 2, 3, 5, 8, 13, 21, 34]);
+      expect(result).toStrictEqual([0, 1, 1, 2, 3, 5, 8, 13, 21, 34]);
     });
   });
 
@@ -177,7 +177,7 @@ describe('@certes/lazy - README Examples', () => {
         collect,
       )(range(1, 1_000_000));
 
-      expect(result).toEqual([2, 4, 6]);
+      expect(result).toStrictEqual([2, 4, 6]);
     });
   });
 });
