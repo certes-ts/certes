@@ -25,12 +25,11 @@ import { range, filter, map, take, collect } from '@certes/lazy';
 
 // Process data lazily through a pipeline
 const result = pipe(
-  range(1, 1000),
   filter((x: number) => x % 2 === 0),
   map((x: number) => x * x),
   take(5),
   collect
-);
+)(range(1, 1000));
 // [4, 16, 36, 64, 100]
 
 // Iterables are reusable
@@ -124,12 +123,11 @@ collect(zip(['a', 'b', 'c'])([1, 2, 3]));
 
 // Complex pipeline
 pipe(
-  range(1, 100),
   filter((x: number) => x % 3 === 0),
   map((x: number) => x * 2),
   chunk(5),
   collect
-);
+)(range(1, 100));
 // [[6, 12, 18, 24, 30], [36, 42, 48, 54, 60], ...]
 ```
 
@@ -143,15 +141,11 @@ Functions that consume iterables and return concrete values.
 | `takeEager` | `n → Iterable<T> → T[]` | Take and collect |
 
 ```typescript
-import { range, filter, collect, reduce } from '@certes/lazy';
+import { range, filter, collect } from '@certes/lazy';
 
 // Collect filtered results
 collect(filter((x: number) => x > 3)(range(1, 5)));
 // [4, 5]
-
-// Sum with reduce
-reduce((acc: number, x: number) => acc + x, 0)(range(1, 10));
-// 55
 ```
 
 ## Composition with `@certes/composition`
@@ -160,22 +154,26 @@ All functions are curried and designed to work with `pipe` and `compose`:
 
 ```typescript
 import { pipe, compose } from '@certes/composition';
-import { range, filter, map, take, collect, reduce } from '@certes/lazy';
+import { range, filter, map, scan, take, collect } from '@certes/lazy';
 
 // Using pipe (left-to-right)
-const sumOfSquaredEvens = pipe(
+const scanOfSquaredEvens = pipe(
   filter((x: number) => x % 2 === 0),
   map((x: number) => x * x),
-  reduce((acc: number, x: number) => acc + x, 0)
+  scan((acc: number, x: number) => acc + x, 0),
+  collect
 );
 
-sumOfSquaredEvens(range(1, 10)); // 220 (4 + 16 + 36 + 64 + 100)
+scanOfSquaredEvens(range(1, 10)); // [ 4, 20, 56, 120, 220 ]
+
+const takeThree = take(3);
+const mapDouble = map((x: number) => x * 2);
 
 // Using compose (right-to-left)
 const firstThreeDoubled = compose(
   collect,
-  map((x: number) => x * 2),
-  take(3)
+  mapDouble,
+  takeThree
 );
 
 firstThreeDoubled(range(1, 100)); // [2, 4, 6]
@@ -186,7 +184,7 @@ firstThreeDoubled(range(1, 100)); // [2, 4, 6]
 Generators like `repeat`, `iterate`, and `generate` produce infinite iterables. Always use limiting operations like `take` or `takeWhile`:
 
 ```typescript
-import { iterate, take, collect } from '@certes/lazy';
+import { iterate, map, take, collect } from '@certes/lazy';
 
 // Fibonacci sequence
 const fibs = iterate(
@@ -209,11 +207,10 @@ collect(take(10)(map(([a]: [number, number]) => a)(fibs)));
 ```typescript
 // Only processes 3 elements, not 1 million
 const result = pipe(
-  range(1, 1_000_000),
   filter((x: number) => x % 2 === 0),
   take(3),
   collect
-);
+)(range(1, 1_000_000));
 // [2, 4, 6]
 ```
 

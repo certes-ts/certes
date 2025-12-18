@@ -56,7 +56,7 @@ import {
   flip,            // C
   identity,        // I
   constant,        // K
-  inverseConstant, // KI
+  second,          // KI
   alternation,     // OR
   fork,            // Phi
   on,              // Psi
@@ -154,18 +154,6 @@ compose(addThree)(double)(5); // 13 (addThree(double(5)))
 
 // Pipe: left-to-right (data flow)
 pipe(double)(addThree)(5); // 13 (double(5) then addThree)
-```
-
-**Visualization:**
-```
-compose(f)(g)(x)         pipe(g)(f)(x)
-        ┌───┐                ┌───┐
-    x──→│ g │──→ gx      x──→│ g │──→ gx
-        └───┘   │            └───┘   │
-                ↓                    ↓
-              ┌───┐                ┌───┐
-              │ f │──→ f(gx)       │ f │──→ f(gx)
-              └───┘                └───┘
 ```
 
 ## Theory

@@ -257,6 +257,7 @@ const sumPositive = (arr: number[]) =>
 const processNumbers = (arr: number[]) => {
   const positives = filterPositive(arr);
   const doubled = map((x: number) => x * 2)(positives);
+
   return every((x: number) => x < 100)(doubled);
 };
 ```

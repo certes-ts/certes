@@ -30,7 +30,6 @@
     "./lookup": "./dist/lookup/index.js",
     "./noop": "./dist/noop/index.js",
     "./once": "./dist/once/index.js",
-    "./range": "./dist/range/index.js",
     "./tap": "./dist/tap/index.js",
     "./package.json": "./package.json"
   },

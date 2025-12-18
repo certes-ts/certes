@@ -1,4 +1,4 @@
-import type { UnaryFunction } from '@/types';
+import type { UnaryFunction } from '../types';
 
 /**
  * Defines the valid shapes for function arrays that can be piped.
