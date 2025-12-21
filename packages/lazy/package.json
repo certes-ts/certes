@@ -33,7 +33,7 @@
     "./generators/repeat": "./dist/generators/repeat/index.js",
     "./helpers/collect": "./dist/helpers/collect/index.js",
     "./helpers/replicate": "./dist/helpers/replicate/index.js",
-    "./helpers/takeEager": "./dist/helpers/takeEager/index.js",
+    "./helpers/take-eager": "./dist/helpers/take-eager/index.js",
     "./iterators/chunk": "./dist/iterators/chunk/index.js",
     "./iterators/concat": "./dist/iterators/concat/index.js",
     "./iterators/drop": "./dist/iterators/drop/index.js",

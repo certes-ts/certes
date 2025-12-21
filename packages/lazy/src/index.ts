@@ -4,7 +4,7 @@ export { range } from './generators/range';
 export { repeat } from './generators/repeat';
 export { collect } from './helpers/collect';
 export { replicate } from './helpers/replicate';
-export { takeEager } from './helpers/takeEager';
+export { takeEager } from './helpers/take-eager';
 export { chunk } from './iterators/chunk';
 export { concat } from './iterators/concat';
 export { drop } from './iterators/drop';
