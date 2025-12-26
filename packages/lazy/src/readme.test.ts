@@ -17,7 +17,30 @@ import {
 
 describe('@certes/lazy - README Examples', () => {
   describe('Quick Start', () => {
-    it('should process data lazily through a pipeline', () => {
+    it('should process data lazily', () => {
+      const mapFn = vi.fn((x: number) => x * x);
+      const filterFn = vi.fn((x: number) => x % 2 === 0);
+      const pipeline = pipe(
+        filter(filterFn),
+        map(mapFn),
+        take(5),
+      )(range(1, 1000));
+
+      // Make sure it hasn't been called yet
+      expect(mapFn).toHaveBeenCalledTimes(0);
+      expect(filterFn).toHaveBeenCalledTimes(0);
+
+      const result = collect(pipeline);
+
+      expect(result).toStrictEqual([4, 16, 36, 64, 100]);
+      // Make sure it only calls what is needed
+      // The 5 times from take(5)
+      expect(mapFn).toHaveBeenCalledTimes(5);
+      // take(5) * 2 to get 5 evens starting from 1
+      expect(filterFn).toHaveBeenCalledTimes(10);
+    });
+
+    it('should process data lazily through a collected pipeline', () => {
       const mapFn = vi.fn((x: number) => x * x);
       const filterFn = vi.fn((x: number) => x % 2 === 0);
       const result = pipe(

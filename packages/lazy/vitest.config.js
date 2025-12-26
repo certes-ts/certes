@@ -16,5 +16,9 @@ export default defineConfig({
     clearMocks: true,
     restoreMocks: true,
     passWithNoTests: true,
+    benchmark: {
+      include: ['**/*.bench.ts'],
+      outputFile: './bench/report.json',
+    },
   },
 });

@@ -2,6 +2,17 @@
 
 Data-Oriented Design primitives for TypeScript with explicit memory layout control, cache-friendly struct definitions, and high-performance dynamic arrays built on TypedArrays.
 
+> [!CAUTION]
+> ### ⚠️ Active Development & Alpha Status
+> This repository is currently undergoing **active development**.
+>
+> **Until `1.0.0` release:**
+> * **Stability:** APIs are subject to breaking changes without prior notice.
+> * **Releases:** Current releases (tags/npm packages) are strictly for **testing and integration feedback**.
+> * **Production:** Do not use this software in production environments where data integrity or high availability is required.
+
+---
+
 ## Installation
 
 ```bash
