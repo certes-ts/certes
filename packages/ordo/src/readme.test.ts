@@ -691,10 +691,8 @@ describe('README Examples', () => {
         return { transformIdx, renderableIdx, physicsIdx };
       };
 
-      // Act
       const entity = createEntity();
 
-      // Assert
       expect(transforms.length).toBe(1);
       expect(renderables.length).toBe(1);
       expect(physics.length).toBe(1);
