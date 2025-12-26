@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { curry } from './';
+import { curry } from '.';
 
 const addAndMultiply = (a: number, b: number, c: number) => (a + b) * c;
 const curriedFn = curry(addAndMultiply);

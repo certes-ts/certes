@@ -34,7 +34,7 @@ const filter =
     return res;
   };
 
-describe('@certes/logic - README Examples', () => {
+describe('README Examples', () => {
   describe('Quick Start', () => {
     it('should perform basic Boolean operations', () => {
       expect(and(true)(false)).toBe(false);

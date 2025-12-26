@@ -22,7 +22,7 @@ import {
   W,
 } from '.';
 
-describe('@certes/combinator - README Examples', () => {
+describe('README Examples', () => {
   describe('Quick Start', () => {
     it('should compose functions right-to-left', () => {
       const addThenDouble = compose((x: number) => x * 2)((x: number) => x + 3);

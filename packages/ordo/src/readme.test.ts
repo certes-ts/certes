@@ -15,7 +15,7 @@ import {
   uint16,
   uint32,
   utf8,
-} from './';
+} from '.';
 
 describe('README Examples', () => {
   describe('Quick Start', () => {

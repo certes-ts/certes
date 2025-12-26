@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { lookup, noop, once, tap } from '.';
 
-describe('@certes/common - README Examples', () => {
+describe('README Examples', () => {
   describe('lookup', () => {
     it('should lookup status codes with default handler', () => {
       const statusCodes = {
