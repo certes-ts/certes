@@ -9,7 +9,7 @@ import type { Struct } from './struct';
 const SCALING_FACTOR = 2;
 
 export class DynamicStructArray<T extends Record<string, ExtendedFieldType>> {
-  readonly def: Struct<T>;
+  readonly #def: Struct<T>;
   #buffer: ArrayBuffer;
   #capacity: number;
   #view: DataView;
@@ -20,7 +20,7 @@ export class DynamicStructArray<T extends Record<string, ExtendedFieldType>> {
       throw new Error('initialCapacity must be greater than 0');
     }
 
-    this.def = def;
+    this.#def = def;
     this.#capacity = initialCapacity;
     this.#buffer = new ArrayBuffer(initialCapacity * def.layout.stride);
     this.#view = new DataView(this.#buffer);
@@ -35,11 +35,11 @@ export class DynamicStructArray<T extends Record<string, ExtendedFieldType>> {
   }
 
   private resize(newCapacity: number): void {
-    const newBuffer = new ArrayBuffer(newCapacity * this.def.layout.stride);
+    const newBuffer = new ArrayBuffer(newCapacity * this.#def.layout.stride);
     const oldView = new Uint8Array(
       this.#buffer,
       0,
-      this.#length * this.def.layout.stride,
+      this.#length * this.#def.layout.stride,
     );
     const newView = new Uint8Array(newBuffer);
 
@@ -90,8 +90,8 @@ export class DynamicStructArray<T extends Record<string, ExtendedFieldType>> {
       );
     }
 
-    const offset = index * this.def.layout.stride;
-    return new StructView(this.def, this.#buffer, offset);
+    const offset = index * this.#def.layout.stride;
+    return new StructView(this.#def, this.#buffer, offset);
   }
 
   remove(index: number): void {
@@ -102,7 +102,7 @@ export class DynamicStructArray<T extends Record<string, ExtendedFieldType>> {
     }
 
     const view = new Uint8Array(this.#buffer);
-    const stride = this.def.layout.stride;
+    const stride = this.#def.layout.stride;
     const srcOffset = (index + 1) * stride;
     const dstOffset = index * stride;
     const bytesToMove = (this.#length - index - 1) * stride;
@@ -128,7 +128,7 @@ export class DynamicStructArray<T extends Record<string, ExtendedFieldType>> {
       );
     }
 
-    const field = this.def.getField(fieldName as string);
+    const field = this.#def.getField(fieldName as string);
     const type = field.type;
 
     if (isExtendedType(type)) {
@@ -138,7 +138,7 @@ export class DynamicStructArray<T extends Record<string, ExtendedFieldType>> {
       );
     }
 
-    const offset = index * this.def.layout.stride + field.offset;
+    const offset = index * this.#def.layout.stride + field.offset;
 
     return (type as FieldType).get(this.#view, offset);
   }
@@ -150,7 +150,7 @@ export class DynamicStructArray<T extends Record<string, ExtendedFieldType>> {
       );
     }
 
-    const field = this.def.getField(fieldName as string);
+    const field = this.#def.getField(fieldName as string);
     const type = field.type;
 
     if (isExtendedType(type)) {
@@ -160,7 +160,7 @@ export class DynamicStructArray<T extends Record<string, ExtendedFieldType>> {
       );
     }
 
-    const offset = index * this.def.layout.stride + field.offset;
+    const offset = index * this.#def.layout.stride + field.offset;
 
     (type as FieldType).set(this.#view, offset, value);
   }
@@ -182,6 +182,6 @@ export class DynamicStructArray<T extends Record<string, ExtendedFieldType>> {
   }
 
   getRawBuffer(): ArrayBuffer {
-    return this.#buffer.slice(0, this.#length * this.def.layout.stride);
+    return this.#buffer.slice(0, this.#length * this.#def.layout.stride);
   }
 }

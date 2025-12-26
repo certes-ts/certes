@@ -1,4 +1,4 @@
-import { pipe } from '@certes/composition';
+import { pipe } from '@certes/composition/pipe';
 import { bench, describe } from 'vitest';
 import { chunk, collect, filter, map, take } from '../src/index';
 
@@ -224,6 +224,7 @@ describe('real-world scenarios - ETL pipeline', () => {
           user: `user_${log.userId}`,
           level: log.level,
         })),
+        // biome-ignore lint/suspicious/noExplicitAny: Testing
         filter((log: any) => log.level !== 'INFO'),
         take(500),
       )(logEntries),

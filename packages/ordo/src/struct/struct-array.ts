@@ -7,40 +7,43 @@ import { StructView } from './struct-view';
 import type { Struct } from './struct';
 
 export class StructArray<T extends Record<string, ExtendedFieldType>> {
-  readonly buffer: ArrayBuffer;
-  readonly capacity: number;
-  private readonly _view: DataView;
-  private _length = 0;
+  readonly #buffer: ArrayBuffer;
+  readonly #capacity: number;
+  readonly #view: DataView;
+  readonly #def: Struct<T>;
+  #length = 0;
 
-  constructor(
-    readonly def: Struct<T>,
-    capacity: number,
-  ) {
-    this.capacity = capacity;
-    this.buffer = new ArrayBuffer(capacity * def.layout.stride);
-    this._view = new DataView(this.buffer);
+  constructor(def: Struct<T>, capacity: number) {
+    this.#capacity = capacity;
+    this.#buffer = new ArrayBuffer(capacity * def.layout.stride);
+    this.#view = new DataView(this.#buffer);
+    this.#def = def;
   }
 
   get length(): number {
-    return this._length;
+    return this.#length;
+  }
+
+  get capacity(): number {
+    return this.#capacity;
   }
 
   at(index: number): StructView<T> {
-    if (index < 0 || index >= this._length) {
+    if (index < 0 || index >= this.#length) {
       throw new RangeError(`Index out of bounds: ${index}`);
     }
 
-    const offset = index * this.def.layout.stride;
+    const offset = index * this.#def.layout.stride;
 
-    return new StructView(this.def, this.buffer, offset);
+    return new StructView(this.#def, this.#buffer, offset);
   }
 
   push(values?: Partial<Record<keyof T, number>>): number {
-    if (this._length >= this.capacity) {
+    if (this.#length >= this.#capacity) {
       throw new RangeError('StructArray capacity exceeded');
     }
 
-    const index = this._length++;
+    const index = this.#length++;
 
     if (values) {
       this.at(index).init(values);
@@ -50,11 +53,11 @@ export class StructArray<T extends Record<string, ExtendedFieldType>> {
   }
 
   get(index: number, fieldName: keyof T): number {
-    if (index < 0 || index >= this._length) {
+    if (index < 0 || index >= this.#length) {
       throw new RangeError(`Index out of bounds: ${index}`);
     }
 
-    const field = this.def.getField(fieldName as string);
+    const field = this.#def.getField(fieldName as string);
     const type = field.type;
 
     if (isExtendedType(type)) {
@@ -64,17 +67,17 @@ export class StructArray<T extends Record<string, ExtendedFieldType>> {
       );
     }
 
-    const offset = index * this.def.layout.stride + field.offset;
+    const offset = index * this.#def.layout.stride + field.offset;
 
-    return (type as FieldType).get(this._view, offset);
+    return (type as FieldType).get(this.#view, offset);
   }
 
   set(index: number, fieldName: keyof T, value: number): void {
-    if (index < 0 || index >= this._length) {
+    if (index < 0 || index >= this.#length) {
       throw new RangeError(`Index out of bounds: ${index}`);
     }
 
-    const field = this.def.getField(fieldName as string);
+    const field = this.#def.getField(fieldName as string);
     const type = field.type;
 
     if (isExtendedType(type)) {
@@ -84,18 +87,18 @@ export class StructArray<T extends Record<string, ExtendedFieldType>> {
       );
     }
 
-    const offset = index * this.def.layout.stride + field.offset;
+    const offset = index * this.#def.layout.stride + field.offset;
 
-    (type as FieldType).set(this._view, offset, value);
+    (type as FieldType).set(this.#view, offset, value);
   }
 
   forEach(fn: (view: StructView<T>, index: number) => void): void {
-    for (let i = 0; i < this._length; i++) {
+    for (let i = 0; i < this.#length; i++) {
       fn(this.at(i), i);
     }
   }
 
   clear(): void {
-    this._length = 0;
+    this.#length = 0;
   }
 }

@@ -2,9 +2,9 @@ import { type ArrayKeys, arrayTypes, type KeyedArray } from '../types';
 import { assertDefined } from '../utils';
 
 export class _CircularBuffer<Key extends ArrayKeys> {
-  #construct: (typeof arrayTypes)[Key];
-  #buffer: KeyedArray[Key];
-  #capacity: number;
+  readonly #construct: (typeof arrayTypes)[Key];
+  readonly #buffer: KeyedArray[Key];
+  readonly #capacity: number;
   #current = 0;
   #head = 0;
   #tail = 0;

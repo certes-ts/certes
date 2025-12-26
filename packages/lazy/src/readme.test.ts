@@ -1,4 +1,5 @@
-import { compose, pipe } from '@certes/composition';
+import { compose } from '@certes/composition/compose';
+import { pipe } from '@certes/composition/pipe';
 import { describe, expect, it, vi } from 'vitest';
 import {
   chunk,

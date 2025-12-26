@@ -39,18 +39,22 @@ const calculateLayout = (
 };
 
 export class Struct<T extends Record<string, ExtendedFieldType>> {
-  readonly layout: StructLayout;
-  private readonly fieldMap: Map<string, FieldDescriptor>;
+  readonly #layout: StructLayout;
+  readonly #fieldMap: Map<string, FieldDescriptor>;
 
   constructor(schema: T) {
-    this.layout = calculateLayout(schema);
-    this.fieldMap = new Map(
-      this.layout.fields.map((field) => [field.name, field]),
+    this.#layout = calculateLayout(schema);
+    this.#fieldMap = new Map(
+      this.#layout.fields.map((field) => [field.name, field]),
     );
   }
 
+  get layout(): StructLayout {
+    return this.#layout;
+  }
+
   create(): StructView<T> {
-    const buffer = new ArrayBuffer(this.layout.stride);
+    const buffer = new ArrayBuffer(this.#layout.stride);
 
     return new StructView(this, buffer, 0);
   }
@@ -60,7 +64,7 @@ export class Struct<T extends Record<string, ExtendedFieldType>> {
   }
 
   getField(name: string): FieldDescriptor {
-    const field = this.fieldMap.get(name);
+    const field = this.#fieldMap.get(name);
 
     if (!field) {
       throw new Error(`Unknown field: ${name}`);
@@ -78,7 +82,7 @@ export class Struct<T extends Record<string, ExtendedFieldType>> {
 
     let lastEnd = 0;
 
-    for (const field of this.layout.fields) {
+    for (const field of this.#layout.fields) {
       if (field.offset > lastEnd) {
         const paddingSize = field.offset - lastEnd;
         console.log(
@@ -94,23 +98,23 @@ export class Struct<T extends Record<string, ExtendedFieldType>> {
       lastEnd = field.offset + field.type.size;
     }
 
-    if (this.layout.stride > lastEnd) {
-      const paddingSize = this.layout.stride - lastEnd;
+    if (this.#layout.stride > lastEnd) {
+      const paddingSize = this.#layout.stride - lastEnd;
       console.log(
         `${'[PADDING]'.padEnd(20)} ${lastEnd.toString().padEnd(8)} ${paddingSize.toString().padEnd(8)}`,
       );
     }
 
     const wastedBytes =
-      this.layout.stride -
-      this.layout.fields.reduce((sum, f) => sum + f.type.size, 0);
+      this.#layout.stride -
+      this.#layout.fields.reduce((sum, f) => sum + f.type.size, 0);
     const efficiency = (
-      ((this.layout.stride - wastedBytes) / this.layout.stride) *
+      ((this.#layout.stride - wastedBytes) / this.#layout.stride) *
       100
     ).toFixed(1);
 
-    console.log(`\nTotal size: ${this.layout.stride} bytes`);
-    console.log(`Actual data: ${this.layout.stride - wastedBytes} bytes`);
+    console.log(`\nTotal size: ${this.#layout.stride} bytes`);
+    console.log(`Actual data: ${this.#layout.stride - wastedBytes} bytes`);
     console.log(`Wasted: ${wastedBytes} bytes`);
     console.log(`Efficiency: ${efficiency}%`);
   }

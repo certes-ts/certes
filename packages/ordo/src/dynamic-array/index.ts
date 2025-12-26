@@ -4,10 +4,10 @@ import { assertDefined } from '../utils';
 const SCALING_FACTOR = 2;
 
 class _DynamicArray<Key extends ArrayKeys> {
-  #construct: (typeof arrayTypes)[Key];
+  readonly #construct: (typeof arrayTypes)[Key];
   #buffer: KeyedArray[Key];
   #capacity: number;
-  #maxCapacity: number;
+  readonly #maxCapacity: number;
   #current = 0;
 
   constructor(arrayType: Key, initialSize: number) {

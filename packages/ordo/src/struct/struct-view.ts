@@ -17,11 +17,11 @@ type ExtractCircularKey<T> =
   T extends CircularBufferFieldType<infer K> ? K : never;
 
 export class StructView<T extends Record<string, ExtendedFieldType>> {
-  constructor(
-    readonly def: Struct<T>,
-    readonly buffer: ArrayBuffer,
-    readonly byteOffset: number,
-  ) {
+  readonly #def: Struct<T>;
+  readonly #buffer: ArrayBuffer;
+  readonly #byteOffset: number;
+
+  constructor(def: Struct<T>, buffer: ArrayBuffer, byteOffset: number) {
     if (byteOffset % def.layout.alignment !== 0) {
       throw new Error(
         `byteOffset ${byteOffset} is not aligned to ${def.layout.alignment} bytes`,
@@ -33,10 +33,18 @@ export class StructView<T extends Record<string, ExtendedFieldType>> {
         `Struct at offset ${byteOffset} exceeds buffer size ${buffer.byteLength}`,
       );
     }
+
+    this.#def = def;
+    this.#buffer = buffer;
+    this.#byteOffset = byteOffset;
   }
 
   private get view(): DataView {
-    return new DataView(this.buffer, this.byteOffset, this.def.layout.stride);
+    return new DataView(
+      this.#buffer,
+      this.#byteOffset,
+      this.#def.layout.stride,
+    );
   }
 
   get<K extends keyof T>(fieldName: T[K] extends FieldType ? K : never): number;
@@ -58,18 +66,18 @@ export class StructView<T extends Record<string, ExtendedFieldType>> {
     | AnyTypedArray
     | Utf8StructField
     | CircularBufferStructField<ArrayKeys> {
-    const field = this.def.getField(fieldName as string);
+    const field = this.#def.getField(fieldName as string);
     const type = field.type;
 
     if (isExtendedType(type)) {
       if (type.kind === 'array') {
-        return type.get(this.buffer, this.byteOffset + field.offset);
+        return type.get(this.#buffer, this.#byteOffset + field.offset);
       }
       if (type.kind === 'utf8') {
-        return type.get(this.buffer, this.byteOffset + field.offset);
+        return type.get(this.#buffer, this.#byteOffset + field.offset);
       }
       if (type.kind === 'circular') {
-        return type.get(this.buffer, this.byteOffset + field.offset);
+        return type.get(this.#buffer, this.#byteOffset + field.offset);
       }
     }
 
@@ -77,7 +85,7 @@ export class StructView<T extends Record<string, ExtendedFieldType>> {
   }
 
   set(fieldName: keyof T, value: number): void {
-    const field = this.def.getField(fieldName as string);
+    const field = this.#def.getField(fieldName as string);
     const type = field.type;
 
     if (isExtendedType(type)) {
@@ -100,14 +108,14 @@ export class StructView<T extends Record<string, ExtendedFieldType>> {
 
   copyFrom(other: StructView<T>): void {
     const src = new Uint8Array(
-      other.buffer,
-      other.byteOffset,
-      this.def.layout.stride,
+      other.#buffer,
+      other.#byteOffset,
+      this.#def.layout.stride,
     );
     const dst = new Uint8Array(
-      this.buffer,
-      this.byteOffset,
-      this.def.layout.stride,
+      this.#buffer,
+      this.#byteOffset,
+      this.#def.layout.stride,
     );
     dst.set(src);
   }
