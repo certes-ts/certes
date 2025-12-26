@@ -29,7 +29,9 @@ export class StructArray<T extends Record<string, ExtendedFieldType>> {
     if (index < 0 || index >= this._length) {
       throw new RangeError(`Index out of bounds: ${index}`);
     }
+
     const offset = index * this.def.layout.stride;
+
     return new StructView(this.def, this.buffer, offset);
   }
 

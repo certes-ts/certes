@@ -672,65 +672,6 @@ const physicsSystem = (dt: number) => {
 };
 ```
 
-### WebGL Vertex Buffer
-
-```typescript
-import { struct, structArray, array } from '@certes/ordo';
-
-const VertexDef = struct({
-  position: array('f32', 3),
-  normal: array('f32', 3),
-  uv: array('f32', 2),
-  color: array('u8', 4)
-});
-
-const vertices = structArray(VertexDef, 1000);
-
-// Fill vertices
-for (let i = 0; i < 100; i++) {
-  const idx = vertices.push();
-  const vertex = vertices.at(idx);
-
-  const pos = vertex.get('position');
-  pos[0] = Math.random();
-  pos[1] = Math.random();
-  pos[2] = Math.random();
-
-  const normal = vertex.get('normal');
-  normal[0] = 0;
-  normal[1] = 1;
-  normal[2] = 0;
-
-  const uv = vertex.get('uv');
-  uv[0] = i % 10 / 10;
-  uv[1] = Math.floor(i / 10) / 10;
-
-  const color = vertex.get('color');
-  color[0] = 255;
-  color[1] = 0;
-  color[2] = 0;
-  color[3] = 255;
-}
-
-// Send to GPU
-const gl = canvas.getContext('webgl2');
-const buffer = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-gl.bufferData(gl.ARRAY_BUFFER, vertices.buffer, gl.STATIC_DRAW);
-
-// Vertex attribute pointers
-const stride = VertexDef.layout.stride;
-const posOffset = VertexDef.getField('position').offset;
-const normalOffset = VertexDef.getField('normal').offset;
-const uvOffset = VertexDef.getField('uv').offset;
-const colorOffset = VertexDef.getField('color').offset;
-
-gl.vertexAttribPointer(0, 3, gl.FLOAT, false, stride, posOffset);
-gl.vertexAttribPointer(1, 3, gl.FLOAT, false, stride, normalOffset);
-gl.vertexAttribPointer(2, 2, gl.FLOAT, false, stride, uvOffset);
-gl.vertexAttribPointer(3, 4, gl.UNSIGNED_BYTE, true, stride, colorOffset);
-```
-
 ## Design Philosophy
 
 ### Data-Oriented vs Object-Oriented
