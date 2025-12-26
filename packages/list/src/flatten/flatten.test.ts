@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { flatten } from '.';
 
-describe('flatten', () => {
+describe('Flatten', () => {
   it('should flatten an array of arrays', () => {
     const arr = [[1, 2], [3, 4], [5]];
     const result = flatten(arr);

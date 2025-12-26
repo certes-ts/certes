@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { takeEager } from '.';
 
-describe('takeEager', () => {
+describe('TakeEager', () => {
   describe('positive cases', () => {
     it('should take n elements and return an array', () => {
       const result = takeEager(3)([1, 2, 3, 4, 5]);

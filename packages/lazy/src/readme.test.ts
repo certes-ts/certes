@@ -16,7 +16,7 @@ import {
   zip,
 } from '.';
 
-describe('@certes/lazy - README Examples', () => {
+describe('README Examples', () => {
   describe('Quick Start', () => {
     it('should process data lazily', () => {
       const mapFn = vi.fn((x: number) => x * x);

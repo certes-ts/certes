@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { drop } from '.';
 
-describe('drop', () => {
+describe('Drop', () => {
   it('should skip the first n elements', () => {
     const result = collect(drop(2)([1, 2, 3, 4, 5]));
 

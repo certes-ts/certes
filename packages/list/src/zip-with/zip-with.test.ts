@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { zipWith } from '.';
 
-describe('zipWith', () => {
+describe('ZipWith', () => {
   it('should combine elements with addition', () => {
     const add = (a: number, b: number) => a + b;
     const arr1 = [1, 2, 3];

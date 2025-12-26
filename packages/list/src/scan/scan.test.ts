@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { scan } from '.';
 
-describe('scan', () => {
+describe('Scan', () => {
   it('should return all intermediate accumulator values', () => {
     const add = (acc: number, x: number) => acc + x;
     const arr = [1, 2, 3, 4];

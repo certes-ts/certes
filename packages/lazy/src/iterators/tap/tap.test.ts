@@ -3,7 +3,7 @@ import { collect } from '../../helpers/collect';
 import { take } from '../take';
 import { tap } from '.';
 
-describe('tap', () => {
+describe('Tap', () => {
   it('should call the function for each element without modifying them', () => {
     const sideEffects: number[] = [];
 

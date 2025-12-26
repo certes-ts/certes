@@ -3,7 +3,7 @@ import { indexOf } from '.';
 
 const arr = [1, 2, 3, 4, 5];
 
-describe('indexOf', () => {
+describe('IndexOf', () => {
   it('should return the index of the first match of the predicate', () => {
     expect(indexOf(3)(arr)).toEqual(2);
   });

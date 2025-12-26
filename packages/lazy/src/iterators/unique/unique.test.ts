@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { unique } from '.';
 
-describe('unique', () => {
+describe('Unique', () => {
   it('should remove duplicate elements preserving first occurrence', () => {
     const result = collect(unique([1, 2, 1, 3, 2, 4]));
 

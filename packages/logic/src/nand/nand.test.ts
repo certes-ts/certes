@@ -4,7 +4,7 @@ import { nand, nandFn } from '.';
 const isEven = (x: number) => !(x & 1);
 const isOdd = (x: number) => !isEven(x);
 
-describe('nand', () => {
+describe('Nand', () => {
   it('should return false for true && true', () => {
     expect(nand(true)(true)).toEqual(false);
   });
@@ -22,7 +22,7 @@ describe('nand', () => {
   });
 });
 
-describe('nandFn', () => {
+describe('NandFn', () => {
   it('should return false for true && true', () => {
     expect(nandFn(isEven)(isEven)(6)).toEqual(false);
   });

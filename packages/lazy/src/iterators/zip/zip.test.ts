@@ -4,7 +4,7 @@ import { map } from '../map';
 import { take } from '../take';
 import { zip } from '.';
 
-describe('zip', () => {
+describe('Zip', () => {
   it('should pair elements from two iterables', () => {
     const result = collect(zip(['a', 'b', 'c'])([1, 2, 3]));
 

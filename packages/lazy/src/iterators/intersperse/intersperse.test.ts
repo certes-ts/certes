@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { intersperse } from '.';
 
-describe('intersperse', () => {
+describe('Intersperse', () => {
   it('should insert separator between elements', () => {
     const result = collect(intersperse(0)([1, 2, 3]));
 

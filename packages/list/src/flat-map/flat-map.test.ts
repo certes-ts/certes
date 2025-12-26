@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { flatMap } from '.';
 
-describe('flatMap', () => {
+describe('FlatMap', () => {
   it('shoudl map and flatten in one operation', () => {
     const duplicate = (x: number) => [x, x];
     const arr = [1, 2, 3];

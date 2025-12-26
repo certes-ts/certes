@@ -4,7 +4,7 @@ import { xor, xorFn } from '.';
 const isEven = (x: number) => !(x & 1);
 const isOdd = (x: number) => !isEven(x);
 
-describe('xor', () => {
+describe('Xor', () => {
   it('should have the correct curried types', () => {
     expectTypeOf(xor).toBeFunction();
     expectTypeOf(xor).toBeCallableWith(0);
@@ -24,7 +24,7 @@ describe('xor', () => {
   });
 });
 
-describe('xorFn', () => {
+describe('XorFn', () => {
   it('should have the correct curried types', () => {
     expectTypeOf(xorFn).toBeFunction();
     expectTypeOf(xorFn<number>).toBeCallableWith(isEven);

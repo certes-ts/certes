@@ -20,7 +20,7 @@ const defaultColor: Color = [128, 128, 128, 155];
 const colorLookup = lookup(colorTable, defaultVal(defaultColor));
 const undefLookup = lookup(colorTable);
 
-describe('lookup', () => {
+describe('Lookup', () => {
   it('should return the selected value', () => {
     const actualOne = colorLookup('NOPE');
     const actualTwo = colorLookup('BUZZ');

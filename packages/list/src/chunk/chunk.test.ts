@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { chunk } from '.';
 
-describe('chunk', () => {
+describe('Chunk', () => {
   it('should chunk array into fixed-size groups', () => {
     const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     const result = chunk(3)(arr);

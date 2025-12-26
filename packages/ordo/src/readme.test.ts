@@ -15,7 +15,7 @@ import {
   uint16,
   uint32,
   utf8,
-} from './';
+} from '.';
 
 describe('README Examples', () => {
   describe('Quick Start', () => {
@@ -691,10 +691,8 @@ describe('README Examples', () => {
         return { transformIdx, renderableIdx, physicsIdx };
       };
 
-      // Act
       const entity = createEntity();
 
-      // Assert
       expect(transforms.length).toBe(1);
       expect(renderables.length).toBe(1);
       expect(physics.length).toBe(1);

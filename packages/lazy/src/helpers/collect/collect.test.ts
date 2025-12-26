@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { collect } from '.';
 
-describe('collect', () => {
+describe('Collect', () => {
   it('should convert an iterable to an array', () => {
     const result = collect([1, 2, 3]);
 

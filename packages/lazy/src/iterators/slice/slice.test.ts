@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { slice } from '.';
 
-describe('slice', () => {
+describe('Slice', () => {
   it('should yield elements from start to end (exclusive)', () => {
     const result = collect(slice(1, 4)([0, 1, 2, 3, 4, 5]));
 

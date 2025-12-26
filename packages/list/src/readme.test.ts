@@ -22,7 +22,7 @@ import {
   unshift,
 } from '.';
 
-describe('@certes/list - README Examples', () => {
+describe('README Examples', () => {
   describe('Usage Section', () => {
     it('should double numbers with map', () => {
       const nums = [1, 2, 3, 4, 5];

@@ -3,7 +3,7 @@ import { collect } from '../../helpers/collect';
 import { take } from '../../iterators/take';
 import { repeat } from '.';
 
-describe('repeat', () => {
+describe('Repeat', () => {
   it('should yield the same value indefinitely', () => {
     const result = collect(take(5)(repeat('x')));
 

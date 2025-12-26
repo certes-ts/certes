@@ -5,7 +5,7 @@ const arr1 = [1, 2, 3];
 const arr2 = [4, 5, 6];
 const expected = [1, 2, 3, 4, 5, 6];
 
-describe('concat', () => {
+describe('Concat', () => {
   it('should concatenate two arrays together', () => {
     expect(concat(arr1)(arr2)).toStrictEqual(expected);
   });

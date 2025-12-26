@@ -3,7 +3,7 @@ import { collect } from '../../helpers/collect';
 import { take } from '../../iterators/take';
 import { generate } from '.';
 
-describe('generate', () => {
+describe('Generate', () => {
   it('should yield fn(0), fn(1), fn(2), ...', () => {
     const result = collect(take(5)(generate((i) => i * i)));
 

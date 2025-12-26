@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { dropWhile } from '.';
 
-describe('dropWhile', () => {
+describe('DropWhile', () => {
   it('should skip elements while predicate is true', () => {
     const result = collect(dropWhile((x: number) => x < 3)([1, 2, 3, 4, 1, 2]));
 
