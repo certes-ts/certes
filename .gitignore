@@ -10,6 +10,7 @@ node_modules
 # Vitest
 .vitest
 coverage
+bench
 
 # TypeScript cache
 *.tsbuildinfo

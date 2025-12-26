@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json.schemastore.org/package",
+  "name": "@certes/ordo",
+  "title": "Certes Ordo",
+  "description": "A Data-Oriented approach in JavaScript.",
+  "author": "https://github.com/certes-ts",
+  "keywords": [],
+  "subPath": "packages/ordo",
+  "version": "0.1.0",
+  "private": false,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/certes-ts/certes"
+  },
+  "bugs": "https://github.com/certes-ts/certes/issues",
+  "type": "module",
+  "files": [
+    "./dist/**",
+    "./CHANGELOG.md",
+    "./package.json",
+    "./README.md"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./circular-buffer": "./dist/circular-buffer/index.js",
+    "./dynamic-array": "./dist/dynamic-array/index.js",
+    "./sparse-array": "./dist/sparse-array/index.js",
+    "./struct/dynamic-struct-array": "./dist/struct/dynamic-struct-array.js",
+    "./struct/factory-functions": "./dist/struct/factory-functions.js",
+    "./struct/fields": "./dist/struct/fields.js",
+    "./struct/struct": "./dist/struct/struct.js",
+    "./struct/struct-array": "./dist/struct/struct-array.js",
+    "./struct/struct-view": "./dist/struct/struct-view.js",
+    "./types": "./dist/types.js",
+    "./utf8-array": "./dist/utf8-array/index.js",
+    "./utils": "./dist/utils.js",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "bench": "pnpm vitest bench --run",
+    "build": "pnpm tsdown",
+    "format": "pnpm biome check --write",
+    "lint": "pnpm biome lint",
+    "test": "pnpm vitest --dir=src",
+    "test:types": "pnpm vitest --typecheck"
+  },
+  "devDependencies": {
+    "@vitest/coverage-istanbul": "^4.0.8",
+    "tsdown": "^0.17.2",
+    "typescript": "5.8.3",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.0.8"
+  },
+  "engines": {
+    "node": "22.x",
+    "pnpm": "10.x"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false
+}
