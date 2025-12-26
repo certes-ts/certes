@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { pipe } from '.';
 
 const identity = <T>(x: T): T => x;
@@ -24,8 +24,8 @@ const stringifyNum = (x: number) =>
     'nine',
   ][x] ?? x.toString();
 
-describe('Pipe - Basic Functionality', () => {
-  test('it should support unary for first fn call and return the correct result', () => {
+describe('Basic Functionality', () => {
+  it('should support unary for first fn call and return the correct result', () => {
     const explodedStrNumVal = pipe(add3, stringifyNum, uppercase, splitIt);
     const upperStrNumVal = pipe(
       add3,
@@ -42,7 +42,7 @@ describe('Pipe - Basic Functionality', () => {
     expect(actualTwo).toBe('SIX');
   });
 
-  test('it should support n-ary for first fn call and return the correct result', () => {
+  it('should support n-ary for first fn call and return the correct result', () => {
     const explodedStrNumVal = pipe(binaryAdd, stringifyNum, uppercase, splitIt);
     const upperStrNumVal = pipe(
       binaryAdd,
@@ -61,7 +61,7 @@ describe('Pipe - Basic Functionality', () => {
 });
 
 describe('Pipe with n-ary Functions', () => {
-  test('pipe(f, g, h) where f is binary', () => {
+  it('should pipe(f, g, h) where f is binary', () => {
     const f = (a: number, b: number): number => a + b;
     const g = multiply2;
     const h = add3;
@@ -73,7 +73,7 @@ describe('Pipe with n-ary Functions', () => {
     expect(piped(5, 3)).toBe(h(g(f(5, 3))));
   });
 
-  test('pipe with ternary leftmost function', () => {
+  it('should pipe with a ternary leftmost function', () => {
     const f = (a: number, b: number, c: number): number => a + b + c;
     const g = multiply2;
     const h = stringify;
@@ -93,7 +93,7 @@ describe('Pipe with n-ary Functions', () => {
  * Pipe must also be associative, just with left-to-right ordering.
  */
 describe('Associativity Law', () => {
-  test('pipe(pipe(f, g), h) ≡ pipe(f, pipe(g, h))', () => {
+  it('pipe(pipe(f, g), h) ≡ pipe(f, pipe(g, h))', () => {
     const f = add3;
     const g = multiply2;
     const h = subtract1;
@@ -116,7 +116,7 @@ describe('Associativity Law', () => {
     expect(left(testValue)).toBe(right(testValue));
   });
 
-  test('associativity holds for multiple test values', () => {
+  it('associativity holds for multiple test values', () => {
     const f = add3;
     const g = multiply2;
     const h = subtract1;
@@ -132,7 +132,7 @@ describe('Associativity Law', () => {
     }
   });
 
-  test('associativity holds for type-changing pipes', () => {
+  it('associativity holds for type-changing pipes', () => {
     const f = multiply2;
     const g = stringify;
     const h = uppercase;
@@ -149,7 +149,7 @@ describe('Associativity Law', () => {
     expect(left(5)).toBe(right(5));
   });
 
-  test('associativity holds for longer pipe chains', () => {
+  it('associativity holds for longer pipe chains', () => {
     const f1 = add3;
     const f2 = multiply2;
     const f3 = subtract1;
@@ -175,7 +175,7 @@ describe('Associativity Law', () => {
  * Identity must be both left and right identity for pipe.
  */
 describe('Identity Laws', () => {
-  test('Left Identity: pipe(id, f) ≡ f', () => {
+  it('left identity: pipe(id, f) ≡ f', () => {
     const f = add3;
 
     const pipedWithId = pipe(identity, f);
@@ -185,7 +185,7 @@ describe('Identity Laws', () => {
     expect(pipedWithId(testValue)).toBe(13);
   });
 
-  test('Right Identity: pipe(f, id) ≡ f', () => {
+  it('right identity: pipe(f, id) ≡ f', () => {
     const f = add3;
 
     const pipedWithId = pipe(f, identity);
@@ -195,7 +195,7 @@ describe('Identity Laws', () => {
     expect(pipedWithId(testValue)).toBe(13);
   });
 
-  test('Both identities: pipe(id, f, id) ≡ f', () => {
+  it('Both identities: pipe(id, f, id) ≡ f', () => {
     const f = multiply2;
 
     const piped = pipe(identity, f, identity);
@@ -205,7 +205,7 @@ describe('Identity Laws', () => {
     expect(piped(testValue)).toBe(14);
   });
 
-  test('identity laws hold for type-changing functions', () => {
+  it('identity laws hold for type-changing functions', () => {
     const f = stringify;
 
     const leftId = pipe(identity, f);
@@ -217,7 +217,7 @@ describe('Identity Laws', () => {
     expect(leftId(testValue)).toBe('42');
   });
 
-  test('pipe(id) ≡ id', () => {
+  it('pipe(id) ≡ id', () => {
     const pipedId = pipe(identity);
 
     const testValue = 42;
@@ -232,7 +232,7 @@ describe('Identity Laws', () => {
  * Verifies that pipe actually performs left-to-right composition.
  */
 describe('Pipe Equivalence', () => {
-  test('pipe(f, g, h)(x) ≡ h(g(f(x)))', () => {
+  it('pipe(f, g, h)(x) ≡ h(g(f(x)))', () => {
     const f = subtract1;
     const g = multiply2;
     const h = add3;
@@ -247,7 +247,7 @@ describe('Pipe Equivalence', () => {
     expect(piped(testValue)).toBe(21);
   });
 
-  test('pipe preserves computation order', () => {
+  it('pipe preserves computation order', () => {
     const f = multiply2;
     const g = stringify;
     const h = uppercase;

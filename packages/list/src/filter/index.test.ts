@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { filter } from '.';
 
 const isEven = (x: number) => !(x & 1);
@@ -8,7 +8,7 @@ const expectedEven = [2, 4, 6];
 const expectedOdd = [1, 3, 5];
 
 describe('filter', () => {
-  test('it should return the correct filtered array', () => {
+  it('it should return the correct filtered array', () => {
     const filterEven = filter(isEven);
     const filterOdd = filter(isOdd);
 
@@ -16,13 +16,13 @@ describe('filter', () => {
     expect(filterOdd(arr)).toStrictEqual(expectedOdd);
   });
 
-  test('it should return empty array when filtering empty array', () => {
+  it('it should return empty array when filtering empty array', () => {
     const filterEven = filter(isEven);
 
     expect(filterEven([])).toStrictEqual([]);
   });
 
-  test('it should return empty array when no matches', () => {
+  it('it should return empty array when no matches', () => {
     const filterNegative = filter((x: number) => x < 0);
 
     expect(filterNegative(arr)).toStrictEqual([]);

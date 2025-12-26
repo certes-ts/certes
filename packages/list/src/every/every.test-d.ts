@@ -1,10 +1,10 @@
-import { expectTypeOf, test } from 'vitest';
+import { expectTypeOf, it } from 'vitest';
 import { every } from '.';
 
 const isEven = (x: number) => !(x & 1);
 const arr = [1, 2, 3, 4];
 
-test('it should have the correct curried types', () => {
+it('should have the correct curried types', () => {
   expectTypeOf(every).toBeFunction();
   expectTypeOf(every).toBeCallableWith(Boolean);
   expectTypeOf(every<number>).toBeCallableWith(isEven);
@@ -14,6 +14,6 @@ test('it should have the correct curried types', () => {
   expectTypeOf(every(isEven)).toBeCallableWith(arr);
 });
 
-test('it should have the correct return types', () => {
+it('should have the correct return types', () => {
   expectTypeOf(every(isEven)(arr)).toBeBoolean();
 });

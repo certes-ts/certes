@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { compose } from '.';
 
 const identity = <T>(x: T): T => x;
@@ -24,8 +24,8 @@ const stringifyNum = (x: number) =>
     'nine',
   ][x] ?? x.toString();
 
-describe('Compose - Basic Functionality', () => {
-  test('it should support unary for first fn call and return the correct result', () => {
+describe('Basic Functionality', () => {
+  it('should support unary for first fn call and return the correct result', () => {
     const strNumValue = compose(uppercase, stringifyNum, add3);
     const explodeStrNumVal = compose(upperMap, splitIt, stringifyNum, add3);
 
@@ -36,7 +36,7 @@ describe('Compose - Basic Functionality', () => {
     expect(actualTwo).toStrictEqual(['S', 'E', 'V', 'E', 'N']);
   });
 
-  test('it should support n-ary for first fn call and return the correct result', () => {
+  it('should support n-ary for first fn call and return the correct result', () => {
     const strNumValue = compose(uppercase, stringifyNum, binaryAdd);
     const explodeStrNumVal = compose(
       upperMap,
@@ -54,7 +54,7 @@ describe('Compose - Basic Functionality', () => {
 });
 
 describe('Composition with n-ary Functions', () => {
-  test('compose(f, g, h) where h is binary', () => {
+  it('should compose(f, g, h) where h is binary', () => {
     const f = add3;
     const g = multiply2;
     const h = (a: number, b: number): number => a + b;
@@ -66,7 +66,7 @@ describe('Composition with n-ary Functions', () => {
     expect(composed(5, 3)).toBe(f(g(h(5, 3))));
   });
 
-  test('compose with ternary rightmost function', () => {
+  it('should compose with a ternary rightmost function', () => {
     const f = stringify;
     const g = multiply2;
     const h = (a: number, b: number, c: number): number => a + b + c;
@@ -86,7 +86,7 @@ describe('Composition with n-ary Functions', () => {
  * This means the grouping of compositions doesn't matter.
  */
 describe('Associativity Law', () => {
-  test('compose(f, compose(g, h)) ≡ compose(compose(f, g), h)', () => {
+  it('compose(f, compose(g, h)) ≡ compose(compose(f, g), h)', () => {
     const f = add3;
     const g = multiply2;
     const h = subtract1;
@@ -114,7 +114,7 @@ describe('Associativity Law', () => {
     expect(left(testValue)).toBe(right(testValue));
   });
 
-  test('associativity holds for multiple test values', () => {
+  it('associativity holds for multiple test values', () => {
     const f = add3;
     const g = multiply2;
     const h = subtract1;
@@ -135,7 +135,7 @@ describe('Associativity Law', () => {
     }
   });
 
-  test('associativity holds for type-changing compositions', () => {
+  it('associativity holds for type-changing compositions', () => {
     const f = uppercase;
     const g = stringify;
     const h = multiply2;
@@ -157,7 +157,7 @@ describe('Associativity Law', () => {
     expect(left(5)).toBe(right(5));
   });
 
-  test('associativity holds for longer composition chains', () => {
+  it('associativity holds for longer composition chains', () => {
     const f1 = add3;
     const f2 = multiply2;
     const f3 = subtract1;
@@ -189,7 +189,7 @@ describe('Associativity Law', () => {
  * for composition. Composing with identity doesn't change behavior.
  */
 describe('Identity Laws', () => {
-  test('Left Identity: compose(id, f) ≡ f', () => {
+  it('left identity: compose(id, f) ≡ f', () => {
     const f = add3;
 
     const composedWithId = compose(identity, f);
@@ -199,7 +199,7 @@ describe('Identity Laws', () => {
     expect(composedWithId(testValue)).toBe(13);
   });
 
-  test('Right Identity: compose(f, id) ≡ f', () => {
+  it('right identity: compose(f, id) ≡ f', () => {
     const f = add3;
 
     const composedWithId = compose(f, identity);
@@ -209,7 +209,7 @@ describe('Identity Laws', () => {
     expect(composedWithId(testValue)).toBe(13);
   });
 
-  test('Both identities: compose(id, f, id) ≡ f', () => {
+  it('both identities: compose(id, f, id) ≡ f', () => {
     const f = multiply2;
 
     const composed = compose(identity, f, identity);
@@ -219,7 +219,7 @@ describe('Identity Laws', () => {
     expect(composed(testValue)).toBe(14);
   });
 
-  test('identity laws hold for type-changing functions', () => {
+  it('identity laws hold for type-changing functions', () => {
     const f = stringify;
 
     const leftId = compose(identity, f);
@@ -231,7 +231,7 @@ describe('Identity Laws', () => {
     expect(leftId(testValue)).toBe('42');
   });
 
-  test('compose(id) ≡ id', () => {
+  it('compose(id) ≡ id', () => {
     const composedId = compose(identity);
 
     const testValue = 42;
@@ -246,7 +246,7 @@ describe('Identity Laws', () => {
  * Verifies that compose actually performs right-to-left composition.
  */
 describe('Composition Equivalence', () => {
-  test('compose(f, g, h)(x) ≡ f(g(h(x)))', () => {
+  it('compose(f, g, h)(x) ≡ f(g(h(x)))', () => {
     const f = add3;
     const g = multiply2;
     const h = subtract1;
@@ -261,7 +261,7 @@ describe('Composition Equivalence', () => {
     expect(composed(testValue)).toBe(21);
   });
 
-  test('compose preserves computation order', () => {
+  it('compose preserves computation order', () => {
     const f = uppercase;
     const g = stringify;
     const h = multiply2;

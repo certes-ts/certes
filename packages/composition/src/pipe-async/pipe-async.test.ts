@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { pipeAsync } from '.';
 
 // Async helpers
@@ -19,6 +19,7 @@ const stringify = (x: number): string => x.toString();
 
 // Identity functions
 const asyncIdentity = async <T>(x: T): Promise<T> => x;
+const identity = <T>(x: T): T => x;
 
 // Error helpers
 // biome-ignore lint/suspicious/useAwait: This is for testing
@@ -30,8 +31,8 @@ const syncThrow = (message: string): never => {
   throw new Error(message);
 };
 
-describe('pipeAsync - Basic Functionality', () => {
-  test('should pipe async functions left-to-right', async () => {
+describe('Basic Functionality', () => {
+  it('should pipe async functions left-to-right', async () => {
     const piped = pipeAsync(asyncSubtract1, asyncMultiply2, asyncAdd3);
 
     const result = await piped(10);
@@ -40,13 +41,13 @@ describe('pipeAsync - Basic Functionality', () => {
     expect(result).toBe(21);
   });
 
-  test('should handle single async function', async () => {
+  it('should handle single async function', async () => {
     const piped = pipeAsync(asyncAdd3);
 
     expect(await piped(5)).toBe(8);
   });
 
-  test('should handle mixed sync and async functions', async () => {
+  it('should handle mixed sync and async functions', async () => {
     const piped = pipeAsync(
       add3, // sync
       asyncMultiply2, // async
@@ -60,7 +61,7 @@ describe('pipeAsync - Basic Functionality', () => {
     expect(result).toBe('16');
   });
 
-  test('should handle n-ary leftmost function', async () => {
+  it('should handle n-ary leftmost function', async () => {
     const binaryAdd = async (a: number, b: number): Promise<number> => a + b;
 
     const piped = pipeAsync(binaryAdd, asyncAdd3, asyncMultiply2);
@@ -71,7 +72,7 @@ describe('pipeAsync - Basic Functionality', () => {
     expect(result).toBe(22);
   });
 
-  test('should handle ternary leftmost function', async () => {
+  it('should handle ternary leftmost function', async () => {
     const ternaryAdd = async (
       a: number,
       b: number,
@@ -86,7 +87,7 @@ describe('pipeAsync - Basic Functionality', () => {
     expect(result).toBe('18');
   });
 
-  test('should return Promise even for all-sync functions', async () => {
+  it('should return Promise even for all-sync functions', async () => {
     const piped = pipeAsync(add3, multiply2);
 
     const result = piped(5);
@@ -97,7 +98,7 @@ describe('pipeAsync - Basic Functionality', () => {
 });
 
 describe('Error Handling', () => {
-  test('pipeAsync should propagate errors from async functions', async () => {
+  it('should propagate errors from async functions', async () => {
     const piped = pipeAsync(
       asyncMultiply2,
       async () => asyncThrow('Test error'),
@@ -107,7 +108,7 @@ describe('Error Handling', () => {
     await expect(piped(5)).rejects.toThrow('Test error');
   });
 
-  test('pipeAsync should propagate errors from sync functions', async () => {
+  it('should propagate errors from sync functions', async () => {
     const piped = pipeAsync(
       asyncMultiply2,
       () => syncThrow('Sync error'),
@@ -117,7 +118,7 @@ describe('Error Handling', () => {
     await expect(piped(5)).rejects.toThrow('Sync error');
   });
 
-  test('should throw on excessive pipe depth', () => {
+  it('should throw on excessive pipe depth', () => {
     const functions = Array(1001).fill(asyncAdd3);
 
     // @ts-expect-error For testing
@@ -130,7 +131,7 @@ describe('Error Handling', () => {
 });
 
 describe('Async Execution Order', () => {
-  test('pipeAsync should execute in correct order', async () => {
+  it('should execute in correct order', async () => {
     const executionOrder: number[] = [];
 
     const fn1 = async (x: number) => {
@@ -153,7 +154,7 @@ describe('Async Execution Order', () => {
     expect(executionOrder).toEqual([1, 2, 3]);
   });
 
-  test('should await each function before calling next', async () => {
+  it('should await each function before calling next', async () => {
     const results: number[] = [];
 
     const fn1 = async (x: number) => {
@@ -181,7 +182,7 @@ describe('Async Execution Order', () => {
 });
 
 describe('Associativity', () => {
-  test('pipe(f, g, h) ≡ manual groupings', async () => {
+  it('pipe(f, g, h) ≡ manual groupings', async () => {
     const f = asyncAdd3;
     const g = asyncMultiply2;
     const h = asyncSubtract1;
@@ -201,7 +202,7 @@ describe('Associativity', () => {
     expect(await direct(testValue)).toBe(expected);
   });
 
-  test('associativity holds with mixed sync/async', async () => {
+  it('associativity holds with mixed sync/async', async () => {
     const f = asyncAdd3;
     const g = multiply2; // sync
     const h = asyncSubtract1;
@@ -218,8 +219,8 @@ describe('Associativity', () => {
   });
 });
 
-describe('Mathematical Properties - Identity', () => {
-  test('left identity: pipe(id, f) ≡ f', async () => {
+describe('Identity', () => {
+  it('left identity: pipe(id, f) ≡ f', async () => {
     const f = asyncAdd3;
 
     const piped = pipeAsync(asyncIdentity, f);
@@ -228,7 +229,7 @@ describe('Mathematical Properties - Identity', () => {
     expect(await piped(testValue)).toBe(await f(testValue));
   });
 
-  test('right identity: pipe(f, id) ≡ f', async () => {
+  it('right identity: pipe(f, id) ≡ f', async () => {
     const f = asyncAdd3;
 
     const piped = pipeAsync(f, asyncIdentity);
@@ -237,7 +238,18 @@ describe('Mathematical Properties - Identity', () => {
     expect(await piped(testValue)).toBe(await f(testValue));
   });
 
-  test('pipe(id) ≡ id', async () => {
+  it('associativity holds with mixed sync/async', async () => {
+    const f = asyncAdd3;
+
+    const leftId = pipeAsync(identity, f);
+    const rightId = pipeAsync(f, identity);
+
+    const testValue = 10;
+    expect(await leftId(testValue)).toBe(await f(testValue));
+    expect(await rightId(testValue)).toBe(await f(testValue));
+  });
+
+  it('pipe(id) ≡ id', async () => {
     const pipedId = pipeAsync(asyncIdentity);
 
     const testValue = 42;

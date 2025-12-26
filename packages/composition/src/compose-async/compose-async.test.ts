@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { composeAsync } from '.';
 
 // Async helpers
@@ -31,8 +31,8 @@ const syncThrow = (message: string): never => {
   throw new Error(message);
 };
 
-describe('composeAsync - Basic Functionality', () => {
-  test('should compose async functions right-to-left', async () => {
+describe('Basic Functionality', () => {
+  it('should compose async functions right-to-left', async () => {
     const composed = composeAsync(asyncAdd3, asyncMultiply2, asyncSubtract1);
 
     const result = await composed(10);
@@ -41,13 +41,13 @@ describe('composeAsync - Basic Functionality', () => {
     expect(result).toBe(21);
   });
 
-  test('should handle single async function', async () => {
+  it('should handle single async function', async () => {
     const composed = composeAsync(asyncAdd3);
 
     expect(await composed(5)).toBe(8);
   });
 
-  test('should handle mixed sync and async functions', async () => {
+  it('should handle mixed sync and async functions', async () => {
     const composed = composeAsync(
       asyncUppercase, // async
       stringify, // sync
@@ -61,7 +61,7 @@ describe('composeAsync - Basic Functionality', () => {
     expect(result).toBe('16');
   });
 
-  test('should handle n-ary rightmost function', async () => {
+  it('should handle n-ary rightmost function', async () => {
     const binaryAdd = async (a: number, b: number): Promise<number> => a + b;
 
     const composed = composeAsync(asyncMultiply2, asyncAdd3, binaryAdd);
@@ -72,7 +72,7 @@ describe('composeAsync - Basic Functionality', () => {
     expect(result).toBe(22);
   });
 
-  test('should handle ternary rightmost function', async () => {
+  it('should handle ternary rightmost function', async () => {
     const ternaryAdd = async (
       a: number,
       b: number,
@@ -87,7 +87,7 @@ describe('composeAsync - Basic Functionality', () => {
     expect(result).toBe('18');
   });
 
-  test('should return Promise even for all-sync functions', async () => {
+  it('should return Promise even for all-sync functions', async () => {
     const composed = composeAsync(add3, multiply2);
 
     const result = composed(5);
@@ -98,7 +98,7 @@ describe('composeAsync - Basic Functionality', () => {
 });
 
 describe('Error Handling', () => {
-  test('composeAsync should propagate errors from async functions', async () => {
+  it('should propagate errors from async functions', async () => {
     const composed = composeAsync(
       asyncAdd3,
       async () => asyncThrow('Test error'),
@@ -108,7 +108,7 @@ describe('Error Handling', () => {
     await expect(composed(5)).rejects.toThrow('Test error');
   });
 
-  test('composeAsync should propagate errors from sync functions', async () => {
+  it('should propagate errors from sync functions', async () => {
     const composed = composeAsync(
       asyncAdd3,
       () => syncThrow('Sync error'),
@@ -118,7 +118,7 @@ describe('Error Handling', () => {
     await expect(composed(5)).rejects.toThrow('Sync error');
   });
 
-  test('should throw on excessive composition depth', () => {
+  it('should throw on excessive composition depth', () => {
     const functions = Array(1001).fill(asyncAdd3);
 
     // @ts-expect-error For testing
@@ -131,7 +131,7 @@ describe('Error Handling', () => {
 });
 
 describe('Async Execution Order', () => {
-  test('composeAsync should execute in correct order', async () => {
+  it('should execute in correct order', async () => {
     const executionOrder: number[] = [];
 
     const fn1 = async (x: number) => {
@@ -154,7 +154,7 @@ describe('Async Execution Order', () => {
     expect(executionOrder).toEqual([3, 2, 1]);
   });
 
-  test('should await each function before calling next', async () => {
+  it('should await each function before calling next', async () => {
     const results: number[] = [];
 
     const fn1 = async (x: number) => {
@@ -182,7 +182,7 @@ describe('Async Execution Order', () => {
 });
 
 describe('Associativity', () => {
-  test('compose(f, g, h) ≡ manual groupings', async () => {
+  it('compose(f, g, h) ≡ manual groupings', async () => {
     const f = asyncAdd3;
     const g = asyncMultiply2;
     const h = asyncSubtract1;
@@ -203,7 +203,7 @@ describe('Associativity', () => {
     expect(await direct(testValue)).toBe(expected);
   });
 
-  test('associativity holds with mixed sync/async', async () => {
+  it('associativity holds with mixed sync/async', async () => {
     const f = asyncAdd3;
     const g = multiply2; // sync
     const h = asyncSubtract1;
@@ -221,7 +221,7 @@ describe('Associativity', () => {
 });
 
 describe('Identity', () => {
-  test('left identity: compose(id, f) ≡ f', async () => {
+  it('left identity: compose(id, f) ≡ f', async () => {
     const f = asyncAdd3;
 
     const composed = composeAsync(asyncIdentity, f);
@@ -230,7 +230,7 @@ describe('Identity', () => {
     expect(await composed(testValue)).toBe(await f(testValue));
   });
 
-  test('right identity: compose(f, id) ≡ f', async () => {
+  it('right identity: compose(f, id) ≡ f', async () => {
     const f = asyncAdd3;
 
     const composed = composeAsync(f, asyncIdentity);
@@ -239,7 +239,7 @@ describe('Identity', () => {
     expect(await composed(testValue)).toBe(await f(testValue));
   });
 
-  test('composeAsync with sync identity', async () => {
+  it('associativity holds with mixed sync/async', async () => {
     const f = asyncAdd3;
 
     const leftId = composeAsync(identity, f);
@@ -250,7 +250,7 @@ describe('Identity', () => {
     expect(await rightId(testValue)).toBe(await f(testValue));
   });
 
-  test('compose(id) ≡ id', async () => {
+  it('compose(id) ≡ id', async () => {
     const composedId = composeAsync(asyncIdentity);
 
     const testValue = 42;
