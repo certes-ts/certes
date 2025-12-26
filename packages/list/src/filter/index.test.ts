@@ -7,7 +7,7 @@ const arr = [1, 2, 3, 4, 5, 6];
 const expectedEven = [2, 4, 6];
 const expectedOdd = [1, 3, 5];
 
-describe('filter', () => {
+describe('Filter', () => {
   it('it should return the correct filtered array', () => {
     const filterEven = filter(isEven);
     const filterOdd = filter(isOdd);

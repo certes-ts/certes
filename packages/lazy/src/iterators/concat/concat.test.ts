@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { concat } from '.';
 
-describe('concat', () => {
+describe('Concat', () => {
   it('should append iterables after the source', () => {
     const result = collect(concat([4, 5], [6])([1, 2, 3]));
 

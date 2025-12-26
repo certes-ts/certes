@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { zip } from '.';
 
-describe('zip', () => {
+describe('Zip', () => {
   it('should pair corresponding elements', () => {
     // Arrange
     const arr1 = [1, 2, 3];

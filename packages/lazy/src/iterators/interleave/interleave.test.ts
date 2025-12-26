@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { interleave } from '.';
 
-describe('interleave', () => {
+describe('Interleave', () => {
   it('should alternate elements from two iterables', () => {
     const result = collect(interleave([4, 5, 6])([1, 2, 3]));
 

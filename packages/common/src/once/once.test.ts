@@ -3,7 +3,7 @@ import { once } from '.';
 
 let globalVal = 10;
 
-describe('once', () => {
+describe('Once', () => {
   beforeEach(() => {
     globalVal = 10;
   });

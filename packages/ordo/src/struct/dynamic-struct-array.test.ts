@@ -21,7 +21,7 @@ describe('DynamicStructArray', () => {
     });
   });
 
-  describe('get/set after #resize', () => {
+  describe('get/set After #resize', () => {
     it('should correctly get primitive fields after resize', () => {
       const def = struct({ id: uint32, value: float32 });
       const arr = dynamicStructArray(def, 2);

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { chunk } from '.';
 
-describe('chunk', () => {
+describe('Chunk', () => {
   it('should group elements into fixed-size arrays', () => {
     const result = collect(chunk(2)([1, 2, 3, 4, 5, 6]));
 

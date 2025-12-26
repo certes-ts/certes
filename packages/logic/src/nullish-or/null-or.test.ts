@@ -11,61 +11,57 @@ const isEven = (x: number) => !(x & 1);
 // biome-ignore lint/suspicious/noExplicitAny: For testing
 const nullVal = (_x: any) => null;
 
-describe('nullishOr', () => {
-  describe('basic functionality', () => {
-    it('should return true for true ?? true', () => {
-      expect(nullishOr(true)(true)).toEqual(true);
-    });
-
-    it('should return true for true ?? null', () => {
-      expect(nullishOr(true)(null)).toEqual(true);
-    });
-
-    it('should return true for null ?? true', () => {
-      expect(nullishOr(null)(true)).toEqual(true);
-    });
-
-    it('should return null for null ?? null', () => {
-      expect(nullishOr(null)(null)).toBeNull();
-    });
+describe('NullishOr', () => {
+  it('should return true for true ?? true', () => {
+    expect(nullishOr(true)(true)).toEqual(true);
   });
 
-  describe('edge cases', () => {
-    it('should preserve 0 as non-nullish', () => {
-      const a = 0;
-      const b = 100;
-      const actual = nullishOr(a)(b);
+  it('should return true for true ?? null', () => {
+    expect(nullishOr(true)(null)).toEqual(true);
+  });
 
-      expect(actual).toBe(0);
-    });
+  it('should return true for null ?? true', () => {
+    expect(nullishOr(null)(true)).toEqual(true);
+  });
 
-    it('should preserve false as non-nullish', () => {
-      const a = false;
-      const b = true;
-      const actual = nullishOr(a)(b);
+  it('should return null for null ?? null', () => {
+    expect(nullishOr(null)(null)).toBeNull();
+  });
 
-      expect(actual).toBe(false);
-    });
+  it('should preserve 0 as non-nullish', () => {
+    const a = 0;
+    const b = 100;
+    const actual = nullishOr(a)(b);
 
-    it('should preserve empty string as non-nullish', () => {
-      const a = '';
-      const b = 'fallback';
-      const actual = nullishOr(a)(b);
+    expect(actual).toBe(0);
+  });
 
-      expect(actual).toBe('');
-    });
+  it('should preserve false as non-nullish', () => {
+    const a = false;
+    const b = true;
+    const actual = nullishOr(a)(b);
 
-    it('should treat undefined as nullish', () => {
-      const a = undefined;
-      const b = 'fallback';
-      const actual = nullishOr(a)(b);
+    expect(actual).toBe(false);
+  });
 
-      expect(actual).toBe('fallback');
-    });
+  it('should preserve empty string as non-nullish', () => {
+    const a = '';
+    const b = 'fallback';
+    const actual = nullishOr(a)(b);
+
+    expect(actual).toBe('');
+  });
+
+  it('should treat undefined as nullish', () => {
+    const a = undefined;
+    const b = 'fallback';
+    const actual = nullishOr(a)(b);
+
+    expect(actual).toBe('fallback');
   });
 });
 
-describe('nullishOrFn', () => {
+describe('NullishOrFn', () => {
   it('should return true for true ?? true', () => {
     expect(nullishOrFn(isEven)(isEven)(6)).toEqual(true);
   });
@@ -83,7 +79,7 @@ describe('nullishOrFn', () => {
   });
 });
 
-describe('swappedNullishOr', () => {
+describe('SwappedNullishOr', () => {
   it('should return true for true ?? true', () => {
     expect(swappedNullishOr(true)(true)).toEqual(true);
   });
@@ -101,7 +97,7 @@ describe('swappedNullishOr', () => {
   });
 });
 
-describe('swappedNullishOrFn', () => {
+describe('SwappedNullishOrFn', () => {
   it('should return true for true ?? true', () => {
     expect(swappedNullishOrFn(isEven)(isEven)(6)).toEqual(true);
   });

@@ -3,7 +3,7 @@ import { includes } from '.';
 
 const arr = [1, 2, 3, 4, 5];
 
-describe('includes', () => {
+describe('Includes', () => {
   it('should return true if the array contains the value', () => {
     expect(includes(3)(arr)).toBeTruthy();
   });

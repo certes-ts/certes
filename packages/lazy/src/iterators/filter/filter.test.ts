@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { filter } from '.';
 
-describe('filter', () => {
+describe('Filter', () => {
   it('should yield only elements satisfying the predicate', () => {
     const result = collect(filter((x: number) => x % 2 === 0)([1, 2, 3, 4, 5]));
 

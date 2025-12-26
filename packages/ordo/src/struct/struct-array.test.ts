@@ -69,7 +69,7 @@ describe('StructArray', () => {
     });
   });
 
-  describe('get/set primitives', () => {
+  describe('get/set Primitives', () => {
     it('should get a primitive field directly', () => {
       const def = struct({ id: uint32, value: float32 });
       const arr = structArray(def, 10);

@@ -4,7 +4,7 @@ import { reduceRight } from '.';
 const concatStr = (base: string, add: string) => `${base}${add}`;
 const arr = ['a', 'b', 'c', 'd', 'e'];
 
-describe('reduceRight', () => {
+describe('ReduceRight', () => {
   it('should correctly reduce the array from the right', () => {
     const sumItems = reduceRight(concatStr)('');
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { range } from '.';
 
-describe('range', () => {
+describe('Range', () => {
   it('should yield integers from start to end inclusive', () => {
     const result = [...range(1, 5)];
 

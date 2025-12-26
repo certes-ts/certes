@@ -4,7 +4,7 @@ import { push } from '.';
 const input = [1, 2, 3, 4];
 const expected = [1, 2, 3, 4, 5];
 
-describe('push', () => {
+describe('Push', () => {
   it('should push the item onto the end of the array', () => {
     expect(push(input)(5)).toEqual(expected);
   });

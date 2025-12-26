@@ -4,7 +4,7 @@ import { unshift } from '.';
 const input = [1, 2, 3, 4];
 const expected = [0, 1, 2, 3, 4];
 
-describe('unshift', () => {
+describe('Unshift', () => {
   it('should push the item onto the start of the array', () => {
     expect(unshift(input)(0)).toEqual(expected);
   });

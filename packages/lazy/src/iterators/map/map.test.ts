@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { map } from '.';
 
-describe('map', () => {
+describe('Map', () => {
   it('should transform each element using the mapping function', () => {
     const result = collect(map((x: number) => x * 2)([1, 2, 3]));
 

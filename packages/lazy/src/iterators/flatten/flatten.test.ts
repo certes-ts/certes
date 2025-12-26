@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { flatten } from '.';
 
-describe('flatten', () => {
+describe('Flatten', () => {
   it('should flatten nested iterables by one level', () => {
     const result = collect(flatten([[1, 2], [3, 4], [5]]));
 

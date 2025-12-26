@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { unique } from '.';
 
-describe('unique', () => {
+describe('Unique', () => {
   it('should remove duplicate numbers', () => {
     const arr = [1, 2, 2, 3, 3, 3, 4];
     const result = unique(arr);

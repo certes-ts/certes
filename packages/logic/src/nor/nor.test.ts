@@ -4,7 +4,7 @@ import { nor, norFn } from '.';
 const isEven = (x: number) => !(x & 1);
 const isOdd = (x: number) => !isEven(x);
 
-describe('nor', () => {
+describe('Nor', () => {
   it('should return false for true || true', () => {
     expect(nor(true)(true)).toEqual(false);
   });
@@ -22,7 +22,7 @@ describe('nor', () => {
   });
 });
 
-describe('norFn', () => {
+describe('NorFn', () => {
   it('should return false for true || true', () => {
     expect(norFn(isEven)(isEven)(6)).toEqual(false);
   });

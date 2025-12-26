@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { flatMap } from '.';
 
-describe('flatMap', () => {
+describe('Flat Map', () => {
   it('should map and flatten results', () => {
     const result = collect(flatMap((x: number) => [x, x * 2])([1, 2, 3]));
 

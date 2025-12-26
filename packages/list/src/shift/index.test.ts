@@ -4,7 +4,7 @@ import { shift } from '.';
 const input = [1, 2, 3, 4, 5];
 const expected = [1, [2, 3, 4, 5]];
 
-describe('shift', () => {
+describe('Shift', () => {
   it('should return the head and tail of the array', () => {
     expect(shift(input)).toStrictEqual(expected);
   });

@@ -15,7 +15,7 @@ import {
 } from './fields';
 
 describe('StructView', () => {
-  describe('get/set primitives', () => {
+  describe('get/set Primitives', () => {
     it('should get and set primitive fields', () => {
       const def = struct({
         id: uint32,
@@ -65,7 +65,7 @@ describe('StructView', () => {
     });
   });
 
-  describe('get arrays', () => {
+  describe('get Arrays', () => {
     it('should return a TypedArray view for array fields', () => {
       const def = struct({
         position: array('f32', 3),
@@ -108,7 +108,7 @@ describe('StructView', () => {
     });
   });
 
-  describe('get/set utf8', () => {
+  describe('get/set Utf8', () => {
     it('should get and set utf8 fields', () => {
       const def = struct({
         name: utf8(32),
@@ -163,7 +163,7 @@ describe('StructView', () => {
     });
   });
 
-  describe('get circular buffer', () => {
+  describe('get CircularBuffer', () => {
     it('should get circular buffer field', () => {
       const def = struct({
         history: circular('f32', 5),
@@ -197,7 +197,7 @@ describe('StructView', () => {
     });
   });
 
-  describe('set on complex fields', () => {
+  describe('Set on Complex Fields', () => {
     it('should throw when trying to set an array field', () => {
       const def = struct({
         position: array('f32', 3),

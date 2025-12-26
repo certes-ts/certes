@@ -4,7 +4,7 @@ import { reduce } from '.';
 const add = (a: number, b: number) => a + b;
 const arr = [1, 2, 3, 4, 5];
 
-describe('reduce', () => {
+describe('Reduce', () => {
   it('should correctly reduce the array', () => {
     const sumItems = reduce(add)(0);
 

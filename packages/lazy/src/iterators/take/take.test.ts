@@ -3,7 +3,7 @@ import { collect } from '../../helpers/collect';
 import { map } from '../map';
 import { take } from '.';
 
-describe('take', () => {
+describe('Take', () => {
   it('should yield at most n elements', () => {
     const result = collect(take(3)([1, 2, 3, 4, 5]));
 

@@ -4,7 +4,7 @@ import { map } from '.';
 const double = (x: number) => x * 2;
 const arr = [1, 2, 3, 4, 5];
 
-describe('map', () => {
+describe('Map', () => {
   it('should return the correct filtered array', () => {
     const doubleItems = map(double);
 

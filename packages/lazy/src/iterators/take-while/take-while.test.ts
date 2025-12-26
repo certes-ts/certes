@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { takeWhile } from '.';
 
-describe('takeWhile', () => {
+describe('TakeWhile', () => {
   it('should yield elements while predicate is true', () => {
     const result = collect(takeWhile((x: number) => x < 4)([1, 2, 3, 4, 5]));
 

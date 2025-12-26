@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { zipWith } from '.';
 
-describe('zipWith', () => {
+describe('ZipWith', () => {
   it('should combine elements using the provided function', () => {
     const result = collect(
       zipWith([10, 20, 30], (a: number, b: number) => a + b)([1, 2, 3]),

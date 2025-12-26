@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { uniqueBy } from '.';
 
-describe('uniqueBy', () => {
+describe('UniqueBy', () => {
   it('should remove duplicates by key function', () => {
     const users = [
       { id: 1, name: 'Alice' },
@@ -20,13 +20,14 @@ describe('uniqueBy', () => {
   });
 
   it('should use first occurrence when duplicates found', () => {
-    const items = [
+    type Result = { id: number; value: string };
+    const items: Result[] = [
       { id: 1, value: 'first' },
       { id: 2, value: 'second' },
       { id: 1, value: 'duplicate' },
     ];
-    // Act
-    const result = uniqueBy((item: { id: number }) => item.id)(items);
+
+    const result = uniqueBy<Result, number>((item) => item.id)(items);
 
     expect(result[0].value).toBe('first');
     expect(result.length).toBe(2);

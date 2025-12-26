@@ -4,45 +4,41 @@ import { or, orFn, swappedOr, swappedOrFn } from '.';
 const isEven = (x: number) => !(x & 1);
 const isOdd = (x: number) => !isEven(x);
 
-describe('or', () => {
-  describe('basic functionality', () => {
-    it('should return true for true || true', () => {
-      expect(or(true)(true)).toEqual(true);
-    });
-
-    it('should return true for true || false', () => {
-      expect(or(true)(false)).toEqual(true);
-    });
-
-    it('should return true for false || true', () => {
-      expect(or(false)(true)).toEqual(true);
-    });
-
-    it('should return false for false || false', () => {
-      expect(or(false)(false)).toEqual(false);
-    });
+describe('Or', () => {
+  it('should return true for true || true', () => {
+    expect(or(true)(true)).toEqual(true);
   });
 
-  describe('edge cases', () => {
-    it('should treat 0 as false', () => {
-      const a = 0;
-      const b = 0;
-      const actual = or(a)(b);
+  it('should return true for true || false', () => {
+    expect(or(true)(false)).toEqual(true);
+  });
 
-      expect(actual).toBe(false);
-    });
+  it('should return true for false || true', () => {
+    expect(or(false)(true)).toEqual(true);
+  });
 
-    it('should treat non-zero as true with false', () => {
-      const a = 42;
-      const b = false;
-      const actual = or(a)(b);
+  it('should return false for false || false', () => {
+    expect(or(false)(false)).toEqual(false);
+  });
 
-      expect(actual).toBe(true);
-    });
+  it('should treat 0 as false', () => {
+    const a = 0;
+    const b = 0;
+    const actual = or(a)(b);
+
+    expect(actual).toBe(false);
+  });
+
+  it('should treat non-zero as true with false', () => {
+    const a = 42;
+    const b = false;
+    const actual = or(a)(b);
+
+    expect(actual).toBe(true);
   });
 });
 
-describe('orFn', () => {
+describe('OrFn', () => {
   it('should return true for true || true', () => {
     expect(orFn(isEven)(isEven)(6)).toEqual(true);
   });
@@ -60,7 +56,7 @@ describe('orFn', () => {
   });
 });
 
-describe('swappedOr', () => {
+describe('SwappedOr', () => {
   it('should return true for true || true', () => {
     expect(swappedOr(true)(true)).toEqual(true);
   });
@@ -78,7 +74,7 @@ describe('swappedOr', () => {
   });
 });
 
-describe('swappedOrFn', () => {
+describe('SwappedOrFn', () => {
   it('should return true for true || true', () => {
     expect(swappedOrFn(isEven)(isEven)(6)).toEqual(true);
   });

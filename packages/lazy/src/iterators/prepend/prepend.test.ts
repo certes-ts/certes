@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { prepend } from '.';
 
-describe('prepend', () => {
+describe('Prepend', () => {
   it('should prepend iterables before the source', () => {
     const result = collect(prepend([1, 2], [3])([4, 5, 6]));
 

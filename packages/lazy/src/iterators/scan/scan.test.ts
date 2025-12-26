@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { scan } from '.';
 
-describe('scan', () => {
+describe('Scan', () => {
   it('should yield intermediate accumulator values', () => {
     const result = collect(
       scan((acc: number, x: number) => acc + x, 0)([1, 2, 3, 4]),
@@ -14,7 +14,7 @@ describe('scan', () => {
   it('should pass the index as the third argument', () => {
     const result = collect(
       scan(
-        (acc: string, x: number, idx) => `${acc}${idx}:${x},`,
+        (acc: string, x: number, idx: number) => `${acc}${idx}:${x},`,
         '',
       )([10, 20, 30]),
     );

@@ -7,7 +7,7 @@ const mostlyZeroArr = [0, 0, 6, 0, 0];
 const oddArr = [1, 3, 5, 7, 9, 11];
 const zeroArr = [0, 0, 0, 0, 0];
 
-describe('some', () => {
+describe('Some', () => {
   it('should return false for empty array', () => {
     const someBool = some(Boolean);
     const someMod = some((x: number) => x % 2 === 0);

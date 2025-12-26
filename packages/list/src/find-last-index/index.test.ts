@@ -5,7 +5,7 @@ const isEven = (x: number) => !(x & 1);
 const is100 = (x: number) => x === 100;
 const arr = [1, 2, 3, 4, 5];
 
-describe('findLastIndex', () => {
+describe('FindLastIndex', () => {
   it('should return the first match of the predicate', () => {
     expect(findLastIndex(isEven)(arr)).toEqual(3);
   });

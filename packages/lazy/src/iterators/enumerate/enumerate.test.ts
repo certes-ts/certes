@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { enumerate } from '.';
 
-describe('enumerate', () => {
+describe('Enumerate', () => {
   it('should pair each element with its index', () => {
     const result = collect(enumerate(['a', 'b', 'c']));
 

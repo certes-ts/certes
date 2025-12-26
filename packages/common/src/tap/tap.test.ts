@@ -9,7 +9,7 @@ const tapper = (n: number) => {
 
 const tapped = tap(tapper);
 
-describe('tap', () => {
+describe('Tap', () => {
   beforeEach(() => {
     sideEffect = 5;
   });

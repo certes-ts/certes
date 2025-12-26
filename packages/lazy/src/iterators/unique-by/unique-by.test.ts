@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { collect } from '../../helpers/collect';
 import { uniqueBy } from '.';
 
-describe('uniqueBy', () => {
+describe('UniqueBy', () => {
   it('should remove duplicates based on key function', () => {
     const users = [
       { id: 1, name: 'Alice' },

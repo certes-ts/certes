@@ -4,7 +4,7 @@ import { reverse } from '.';
 const input = [1, 2, 3, 4, 5];
 const expected = [5, 4, 3, 2, 1];
 
-describe('reverse', () => {
+describe('Reverse', () => {
   it('should correctly reverse the array', () => {
     expect(reverse(input)).toStrictEqual(expected);
   });

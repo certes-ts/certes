@@ -6,7 +6,7 @@ const emptyArr: number[] = [];
 const evenArr = [2, 4, 6, 8, 10];
 const oddArr = [0, 3, 5, 7, 9, 11];
 
-describe('every', () => {
+describe('Every', () => {
   it('should return true for an empty array', () => {
     const everyBool = every(Boolean);
     const everyMod = every(isEven);
