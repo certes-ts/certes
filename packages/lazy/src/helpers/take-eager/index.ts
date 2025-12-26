@@ -1,4 +1,4 @@
-import { compose } from '@certes/composition';
+import { compose } from '@certes/composition/compose';
 import { collect } from '@/helpers/collect';
 import { take } from '@/iterators/take';
 
