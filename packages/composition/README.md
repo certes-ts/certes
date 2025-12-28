@@ -86,6 +86,7 @@ await pipeline(42);
 ### compose(...fns)
 
 Composes functions from right to left.
+
 ```typescript
 const fn = compose(f, g, h);
 fn(x) === f(g(h(x)));
@@ -94,11 +95,12 @@ fn(x) === f(g(h(x)));
 **Constraints:**
 - Last function can accept n parameters
 - All other functions must be unary
-- Maximum depth: 1000 functions
+- Type inference supported for up to 10 functions (nest multiple calls for more)
 
 ### pipe(...fns)
 
 Composes functions from left to right.
+
 ```typescript
 const fn = pipe(f, g, h);
 fn(x) === h(g(f(x)));
@@ -107,7 +109,7 @@ fn(x) === h(g(f(x)));
 **Constraints:**
 - First function can accept n parameters
 - All other functions must be unary
-- Maximum depth: 1000 functions
+- Type inference supported for up to 10 functions (nest multiple calls for more)
 
 ### composeAsync(...fns)
 
@@ -127,7 +129,7 @@ await fn(x) === await f(await g(await h(x)));
 **Constraints:**
 - Last function can accept n parameters
 - All other functions must be unary
-- Maximum depth: 1000 functions
+- Type inference supported for up to 10 functions (nest multiple calls for more)
 
 ### pipeAsync(...fns)
 
@@ -147,11 +149,12 @@ await fn(x) === await h(await g(await f(x)));
 **Constraints:**
 - First function can accept n parameters
 - All other functions must be unary
-- Maximum depth: 1000 functions
+- Type inference supported for up to 10 functions (nest multiple calls for more)
 
 ### curry(fn)
 
 Returns a curried version of the function.
+
 ```typescript
 const add = (a: number, b: number, c: number) => a + b + c;
 const curriedAdd = curry(add);
@@ -160,7 +163,11 @@ const add5 = curriedAdd(5);
 add5(3, 2); // 10
 ```
 
-**Note:** Uses `Function.prototype.length` for arity detection. Rest parameters and default parameters may not curry as expected.
+**Constraints:**
+- **Supports functions with 0-6 parameters only**
+- **Functions with 7+ parameters will throw `RangeError`**
+- Uses `Function.prototype.length` for arity detection
+- Rest parameters and default parameters may not curry as expected
 
 ## License
 

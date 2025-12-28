@@ -118,17 +118,6 @@ describe('ComposeAsync', () => {
 
       await expect(composed(5)).rejects.toThrow('Sync error');
     });
-
-    it('should throw on excessive composition depth', () => {
-      const functions = Array(1001).fill(asyncAdd3);
-
-      // @ts-expect-error For testing
-      expect(() => composeAsync(...functions)).toThrow(RangeError);
-      // @ts-expect-error For testing
-      expect(() => composeAsync(...functions)).toThrow(
-        'Async composition depth exceeds 1000',
-      );
-    });
   });
 
   describe('Async Execution Order', () => {
@@ -188,12 +177,8 @@ describe('ComposeAsync', () => {
       const g = asyncMultiply2;
       const h = asyncSubtract1;
 
-      // Create intermediate compositions with explicit types
-      const gh: (x: number) => Promise<number> = composeAsync(g, h);
-      const fg: (x: number) => Promise<number> = composeAsync(f, g);
-
-      const left = composeAsync(f, gh);
-      const right = composeAsync(fg, h);
+      const left = composeAsync(f, composeAsync(g, h));
+      const right = composeAsync(composeAsync(f, g), h);
       const direct = composeAsync(f, g, h);
 
       const testValue = 10;
@@ -209,11 +194,8 @@ describe('ComposeAsync', () => {
       const g = multiply2; // sync
       const h = asyncSubtract1;
 
-      const gh: (x: number) => Promise<number> = composeAsync(g, h);
-      const fg: (x: number) => Promise<number> = composeAsync(f, g);
-
-      const left = composeAsync(f, gh);
-      const right = composeAsync(fg, h);
+      const left = composeAsync(f, composeAsync(g, h));
+      const right = composeAsync(composeAsync(f, g), h);
 
       const testValue = 10;
 

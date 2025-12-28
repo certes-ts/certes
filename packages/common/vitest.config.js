@@ -16,5 +16,6 @@ export default defineConfig({
     clearMocks: true,
     restoreMocks: true,
     passWithNoTests: true,
+    silent: 'passed-only',
   },
 });

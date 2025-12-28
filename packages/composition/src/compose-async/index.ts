@@ -1,95 +1,34 @@
 import type { UnaryAsyncFunction } from '../types';
 
 /**
- * Defines the valid shapes for async function arrays that can be composed.
- *
- * This union type represents two possible async compositions:
- * 1. An array with zero or more unary async functions followed by one n-ary async function
- * 2. A single n-ary async function
- *
- * Functions can return either Promise<T> or T (sync functions are auto-wrapped).
+ * Async function type that can return either a Promise or a synchronous value.
  */
-type AsyncCompositionArray =
-  // biome-ignore lint/suspicious/noExplicitAny: This is intended
-  | readonly [...UnaryAsyncFunction[], (...args: any[]) => Promise<any> | any]
-  // biome-ignore lint/suspicious/noExplicitAny: This is intended
-  | readonly [(...args: any[]) => Promise<any> | any];
+type AsyncFn<Args extends readonly unknown[], R> = (
+  ...args: Args
+) => Promise<R> | R;
 
 /**
- * Extracts the parameter types of the rightmost (last) function in an async composition array.
- */
-type ComposeAsyncParams<Fns extends AsyncCompositionArray> =
-  Fns extends readonly [...unknown[], infer Last]
-    ? // biome-ignore lint/suspicious/noExplicitAny: This is intended
-      Last extends (...args: infer P) => any
-      ? P
-      : never
-    : never;
-
-/**
- * Extracts the awaited return type of the leftmost (first) function in an async composition array.
- */
-type ComposeAsyncReturn<Fns extends AsyncCompositionArray> =
-  Fns extends readonly [infer First, ...unknown[]]
-    ? // biome-ignore lint/suspicious/noExplicitAny: This is intended
-      First extends (...args: any[]) => infer R
-      ? Awaited<R>
-      : never
-    : never;
-
-/**
- * Validates and transforms an async function array to ensure valid composition structure.
- */
-type ComposableAsync<Fn extends AsyncCompositionArray> = Fn extends readonly [
-  // biome-ignore lint/suspicious/noExplicitAny: This is intended
-  (...args: any[]) => any,
-]
-  ? Fn
-  : Fn extends readonly [
-        infer First extends UnaryAsyncFunction,
-        ...infer Rest extends AsyncCompositionArray,
-      ]
-    ? readonly [First, ...ComposableAsync<Rest>]
-    : never;
-
-const MAX_ASYNC_COMPOSITION_DEPTH = 1000;
-
-/**
- * Composes async functions from right to left.
+ * Right-to-left variadic async function composition.
  *
- * @template Fns - Tuple type of composable async functions, where all but the last must be unary
- *
- * @param fns - The functions to compose in right-to-left order
- *
- * @returns A new async function accepting the parameters of the rightmost function in `fns`,
- *          returning a Promise of the return type of the leftmost function in `fns`
+ * Combines two or more functions (sync or async) to create a new async function,
+ * passing the awaited result from one function to the next until all have been called.
+ * The rightmost function is applied first to the input arguments.
  *
  * @remarks
- * The implementation follows right-to-left composition semantics:
- * 1. The rightmost function is applied first to the input arguments
- * 2. Each subsequent function (moving left) receives the awaited result of the previous function
- * 3. The leftmost function's result becomes the final output
- *
- * Mathematical notation: (f ∘ g ∘ h)(x) = await f(await g(await h(x)))
+ * Mathematical notation: `(f ∘ g ∘ h)(x) = await f(await g(await h(x)))`
  *
  * Type constraints:
- * - The last function can accept n parameters
+ * - The rightmost (last) function can accept n parameters
  * - All other functions must be unary (single parameter)
- * - Functions can return Promise<T> or T (sync functions auto-wrapped)
- * - Final return type is always Promise<T>
+ * - Functions can return `Promise<T>` or `T` (sync functions auto-wrapped)
+ * - Final return type is always `Promise<T>`
+ * - Return type of function `i` must be assignable to parameter of function `i-1`
  *
- * Performance: O(n) time complexity, O(1) space complexity where n is the number of functions.
- * Uses iterative implementation with await to handle async operations.
- *
- * @example
- * const fetchUser = async (id: number): Promise<User> => { ... };
- * const getEmail = (user: User): string => user.email;
- * const sendEmail = async (email: string): Promise<void> => { ... };
- *
- * const notifyUser = composeAsync(sendEmail, getEmail, fetchUser);
- * await notifyUser(123);
+ * The overload-based signature provides reliable type inference up to 10 functions.
+ * For compositions exceeding 10 functions, nest multiple composeAsync calls.
  *
  * @example
+ * ```ts
  * // Mix of sync and async functions
  * const transform = composeAsync(
  *   async (x: string) => x.toUpperCase(),  // async
@@ -97,36 +36,174 @@ const MAX_ASYNC_COMPOSITION_DEPTH = 1000;
  *   async (x: number) => x + 3             // async
  * );
  * await transform(4); // "7"
+ *
+ * // With n-ary rightmost function
+ * const fetchAndProcess = composeAsync(
+ *   formatResult,
+ *   parseJSON,
+ *   async (url: string, options: RequestInit) => fetch(url, options)
+ * );
+ * await fetchAndProcess('https://api.example.com', { method: 'GET' });
+ * ```
  */
-export const composeAsync = <Fns extends AsyncCompositionArray>(
-  ...fns: ComposableAsync<Fns>
-): ((...args: ComposeAsyncParams<Fns>) => Promise<ComposeAsyncReturn<Fns>>) => {
+export function composeAsync<Args extends readonly unknown[], B>(
+  f: AsyncFn<Args, B>,
+): (...args: Args) => Promise<Awaited<B>>;
+
+export function composeAsync<Args extends readonly unknown[], A, B>(
+  f: (a: Awaited<A>) => Promise<B> | B,
+  g: AsyncFn<Args, A>,
+): (...args: Args) => Promise<Awaited<B>>;
+
+export function composeAsync<Args extends readonly unknown[], A, B, C>(
+  f: (b: Awaited<B>) => Promise<C> | C,
+  g: (a: Awaited<A>) => Promise<B> | B,
+  h: AsyncFn<Args, A>,
+): (...args: Args) => Promise<Awaited<C>>;
+
+export function composeAsync<Args extends readonly unknown[], A, B, C, D>(
+  f: (c: Awaited<C>) => Promise<D> | D,
+  g: (b: Awaited<B>) => Promise<C> | C,
+  h: (a: Awaited<A>) => Promise<B> | B,
+  i: AsyncFn<Args, A>,
+): (...args: Args) => Promise<Awaited<D>>;
+
+export function composeAsync<Args extends readonly unknown[], A, B, C, D, E>(
+  f: (d: Awaited<D>) => Promise<E> | E,
+  g: (c: Awaited<C>) => Promise<D> | D,
+  h: (b: Awaited<B>) => Promise<C> | C,
+  i: (a: Awaited<A>) => Promise<B> | B,
+  j: AsyncFn<Args, A>,
+): (...args: Args) => Promise<Awaited<E>>;
+
+export function composeAsync<Args extends readonly unknown[], A, B, C, D, E, F>(
+  f: (e: Awaited<E>) => Promise<F> | F,
+  g: (d: Awaited<D>) => Promise<E> | E,
+  h: (c: Awaited<C>) => Promise<D> | D,
+  i: (b: Awaited<B>) => Promise<C> | C,
+  j: (a: Awaited<A>) => Promise<B> | B,
+  k: AsyncFn<Args, A>,
+): (...args: Args) => Promise<Awaited<F>>;
+
+export function composeAsync<
+  Args extends readonly unknown[],
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+>(
+  f: (f_: Awaited<F>) => Promise<G> | G,
+  g: (e: Awaited<E>) => Promise<F> | F,
+  h: (d: Awaited<D>) => Promise<E> | E,
+  i: (c: Awaited<C>) => Promise<D> | D,
+  j: (b: Awaited<B>) => Promise<C> | C,
+  k: (a: Awaited<A>) => Promise<B> | B,
+  l: AsyncFn<Args, A>,
+): (...args: Args) => Promise<Awaited<G>>;
+
+export function composeAsync<
+  Args extends readonly unknown[],
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+  H,
+>(
+  f: (g_: Awaited<G>) => Promise<H> | H,
+  g: (f_: Awaited<F>) => Promise<G> | G,
+  h: (e: Awaited<E>) => Promise<F> | F,
+  i: (d: Awaited<D>) => Promise<E> | E,
+  j: (c: Awaited<C>) => Promise<D> | D,
+  k: (b: Awaited<B>) => Promise<C> | C,
+  l: (a: Awaited<A>) => Promise<B> | B,
+  m: AsyncFn<Args, A>,
+): (...args: Args) => Promise<Awaited<H>>;
+
+export function composeAsync<
+  Args extends readonly unknown[],
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+  H,
+  I,
+>(
+  f: (h_: Awaited<H>) => Promise<I> | I,
+  g: (g_: Awaited<G>) => Promise<H> | H,
+  h: (f_: Awaited<F>) => Promise<G> | G,
+  i: (e: Awaited<E>) => Promise<F> | F,
+  j: (d: Awaited<D>) => Promise<E> | E,
+  k: (c: Awaited<C>) => Promise<D> | D,
+  l: (b: Awaited<B>) => Promise<C> | C,
+  m: (a: Awaited<A>) => Promise<B> | B,
+  n: AsyncFn<Args, A>,
+): (...args: Args) => Promise<Awaited<I>>;
+
+export function composeAsync<
+  Args extends readonly unknown[],
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+  H,
+  I,
+  J,
+>(
+  f: (i_: Awaited<I>) => Promise<J> | J,
+  g: (h_: Awaited<H>) => Promise<I> | I,
+  h: (g_: Awaited<G>) => Promise<H> | H,
+  i: (f_: Awaited<F>) => Promise<G> | G,
+  j: (e: Awaited<E>) => Promise<F> | F,
+  k: (d: Awaited<D>) => Promise<E> | E,
+  l: (c: Awaited<C>) => Promise<D> | D,
+  m: (b: Awaited<B>) => Promise<C> | C,
+  n: (a: Awaited<A>) => Promise<B> | B,
+  o: AsyncFn<Args, A>,
+): (...args: Args) => Promise<Awaited<J>>;
+
+/**
+ * Fallback overload for async compositions exceeding 10 functions.
+ * Type checking between intermediate functions is not enforced.
+ */
+export function composeAsync(
+  ...fns: UnaryAsyncFunction[]
+): (...args: unknown[]) => Promise<unknown>;
+
+export function composeAsync(
+  ...fns: ((...args: unknown[]) => unknown)[]
+): (...args: unknown[]) => Promise<unknown> {
   const len = fns.length;
 
-  if (len > MAX_ASYNC_COMPOSITION_DEPTH) {
-    throw new RangeError(
-      `Async composition depth exceeds ${MAX_ASYNC_COMPOSITION_DEPTH}`,
-    );
+  if (len === 0) {
+    throw new Error('composeAsync requires at least one function');
   }
 
-  return async (
-    ...args: ComposeAsyncParams<Fns>
-  ): Promise<ComposeAsyncReturn<Fns>> => {
-    if (len === 1) {
-      // biome-ignore lint/suspicious/noExplicitAny: This is intended
-      return await (fns[0] as any)(...(args as any[]));
-    }
+  if (len === 1) {
+    // biome-ignore lint/style/noNonNullAssertion: Just checked if there is atleast one
+    return async (...args: unknown[]) => await fns[0]!(...args);
+  }
 
-    // Start with rightmost function (index: len - 1)
-    // biome-ignore lint/suspicious/noExplicitAny: This is intended
-    let result = await (fns[len - 1] as any)(...(args as any[]));
+  return async (...args: unknown[]): Promise<unknown> => {
+    // biome-ignore lint/style/noNonNullAssertion: I know there is at least two
+    let result = await fns[len - 1]!(...args);
 
-    // Iterate backwards from len - 2 to 0
     for (let i = len - 2; i >= 0; i--) {
-      // biome-ignore lint/style/noNonNullAssertion: We know fns[i] exists because i is within [0, len-2]
+      // biome-ignore lint/style/noNonNullAssertion: Won't run more than it can
       result = await fns[i]!(result);
     }
 
-    return result as ComposeAsyncReturn<Fns>;
+    return result;
   };
-};
+}

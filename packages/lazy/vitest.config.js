@@ -5,6 +5,10 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
     watch: false,
+    benchmark: {
+      include: ['**/*.bench.ts'],
+      outputFile: './bench/report.json',
+    },
     coverage: {
       provider: 'istanbul',
       reporter: ['json', 'json-summary', 'lcov', 'text'],
@@ -16,9 +20,6 @@ export default defineConfig({
     clearMocks: true,
     restoreMocks: true,
     passWithNoTests: true,
-    benchmark: {
-      include: ['**/*.bench.ts'],
-      outputFile: './bench/report.json',
-    },
+    silent: 'passed-only',
   },
 });

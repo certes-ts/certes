@@ -26,14 +26,16 @@ Creates a curried lookup function with optional default handling for missing key
 
 **Type Signature**
 ```typescript
+// Without default function
 function lookup(
-  obj: A,
-  def: B
-): (prop: string | number | symbol) => ReturnType;
+  obj: T
+): (prop: PropertyKey) => T[keyof T] | undefined;
 
+// With default function
 function lookup(
-  obj: A
-): (prop: string | number | symbol) => A[keyof A] | undefined;
+  obj: T,
+  def: (value: T[keyof T] | undefined) => R
+): (prop: PropertyKey) => T[keyof T] | R;
 ```
 
 **Parameters**
@@ -58,7 +60,7 @@ type Statuses = typeof statusCodes[keyof typeof statusCodes];
 const getStatus = lookup(statusCodes, (x: Statuses | undefined) => x ?? 'Unknown');
 
 getStatus(200); // 'OK'
-getStatus(999); // 'Unknown'
+getStatus(999); // Statuses | 'Unknown'
 ```
 
 ---

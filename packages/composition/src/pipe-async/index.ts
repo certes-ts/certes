@@ -1,94 +1,34 @@
 import type { UnaryAsyncFunction } from '../types';
 
 /**
- * Defines the valid shapes for async function arrays that can be piped.
+ * Async function type that can return either a Promise or a synchronous value.
  */
-type AsyncPipeArray =
-  // biome-ignore lint/suspicious/noExplicitAny: This is intended
-  | readonly [(...args: any[]) => Promise<any> | any, ...UnaryAsyncFunction[]]
-  // biome-ignore lint/suspicious/noExplicitAny: This is intended
-  | readonly [(...args: any[]) => Promise<any> | any];
+type AsyncFn<Args extends readonly unknown[], R> = (
+  ...args: Args
+) => Promise<R> | R;
 
 /**
- * Extracts the parameter types of the leftmost (first) function in an async pipe array.
- */
-type PipeAsyncParams<Fns extends AsyncPipeArray> = Fns extends readonly [
-  infer First,
-  ...unknown[],
-]
-  ? // biome-ignore lint/suspicious/noExplicitAny: This is intended
-    First extends (...args: infer P) => any
-    ? P
-    : never
-  : never;
-
-/**
- * Extracts the awaited return type of the rightmost (last) function in an async pipe array.
- */
-type PipeAsyncReturn<Fns extends AsyncPipeArray> = Fns extends readonly [
-  ...unknown[],
-  infer Last,
-]
-  ? // biome-ignore lint/suspicious/noExplicitAny: This is intended
-    Last extends (...args: any[]) => infer R
-    ? Awaited<R>
-    : never
-  : never;
-
-/**
- * Validates and transforms an async function array to ensure valid pipe structure.
- */
-type PipeableAsync<Fn extends AsyncPipeArray> = Fn extends readonly [
-  // biome-ignore lint/suspicious/noExplicitAny: This is intended
-  (...args: any[]) => any,
-]
-  ? Fn
-  : Fn extends readonly [
-        // biome-ignore lint/suspicious/noExplicitAny: This is intended
-        infer First extends (...args: any[]) => any,
-        ...infer Rest extends readonly UnaryAsyncFunction[],
-      ]
-    ? readonly [First, ...Rest]
-    : never;
-
-const MAX_ASYNC_PIPE_DEPTH = 1000;
-
-/**
- * Pipes async functions from left to right..
+ * Left-to-right variadic async function composition (piping).
  *
- * @template Fns - Tuple type of pipeable async functions, where the first can be n-ary
- *                 and all subsequent functions must be unary
- *
- * @param fns - The functions to pipe in left-to-right order
- *
- * @returns A new async function accepting the parameters of the leftmost function in `fns`,
- *          returning a Promise of the return type of the rightmost function in `fns`
+ * Combines two or more functions (sync or async) to create a new async function,
+ * passing the awaited result from one function to the next until all have been called.
+ * The leftmost function is applied first to the input arguments.
  *
  * @remarks
- * The implementation follows left-to-right pipe semantics:
- * 1. The leftmost function is applied first to the input arguments
- * 2. Each subsequent function (moving right) receives the awaited result of the previous function
- * 3. The rightmost function's result becomes the final output
- *
- * Mathematical notation: pipe(f, g, h)(x) = await h(await g(await f(x)))
+ * Mathematical notation: `(f | g | h)(x) = await h(await g(await f(x)))`
  *
  * Type constraints:
- * - The first function can accept n parameters
+ * - The leftmost (first) function can accept n parameters
  * - All other functions must be unary (single parameter)
- * - Functions can return Promise<T> or T (sync functions auto-wrapped)
- * - Final return type is always Promise<T>
+ * - Functions can return `Promise<T>` or `T` (sync functions auto-wrapped)
+ * - Final return type is always `Promise<T>`
+ * - Return type of function `i` must be assignable to parameter of function `i+1`
  *
- * Performance: O(n) time complexity, O(1) space complexity where n is the number of functions.
- *
- * @example
- * const fetchData = async (url: string): Promise<Response> => { ... };
- * const parseJSON = async (response: Response): Promise<Data> => { ... };
- * const transform = (data: Data): Result => { ... };
- *
- * const processUrl = pipeAsync(fetchData, parseJSON, transform);
- * await processUrl('https://api.example.com/data');
+ * The overload-based signature provides reliable type inference up to 10 functions.
+ * For pipes exceeding 10 functions, nest multiple pipeAsync calls.
  *
  * @example
+ * ```ts
  * // Mix of sync and async functions
  * const process = pipeAsync(
  *   async (x: number) => x + 3,            // async
@@ -96,34 +36,165 @@ const MAX_ASYNC_PIPE_DEPTH = 1000;
  *   async (x: string) => x.toUpperCase()   // async
  * );
  * await process(4); // "7"
+ *
+ * // With n-ary leftmost function
+ * const fetchAndProcess = pipeAsync(
+ *   async (url: string, options: RequestInit) => fetch(url, options),
+ *   (response: Response) => response.json(),
+ *   (data: unknown) => processData(data)
+ * );
+ * await fetchAndProcess('https://api.example.com', { method: 'GET' });
+ * ```
  */
-export const pipeAsync = <Fns extends AsyncPipeArray>(
-  ...fns: PipeableAsync<Fns>
-): ((...args: PipeAsyncParams<Fns>) => Promise<PipeAsyncReturn<Fns>>) => {
+export function pipeAsync<Args extends readonly unknown[], A>(
+  f: AsyncFn<Args, A>,
+): (...args: Args) => Promise<Awaited<A>>;
+
+export function pipeAsync<Args extends readonly unknown[], A, B>(
+  f: AsyncFn<Args, A>,
+  g: (a: Awaited<A>) => Promise<B> | B,
+): (...args: Args) => Promise<Awaited<B>>;
+
+export function pipeAsync<Args extends readonly unknown[], A, B, C>(
+  f: AsyncFn<Args, A>,
+  g: (a: Awaited<A>) => Promise<B> | B,
+  h: (b: Awaited<B>) => Promise<C> | C,
+): (...args: Args) => Promise<Awaited<C>>;
+
+export function pipeAsync<Args extends readonly unknown[], A, B, C, D>(
+  f: AsyncFn<Args, A>,
+  g: (a: Awaited<A>) => Promise<B> | B,
+  h: (b: Awaited<B>) => Promise<C> | C,
+  i: (c: Awaited<C>) => Promise<D> | D,
+): (...args: Args) => Promise<Awaited<D>>;
+
+export function pipeAsync<Args extends readonly unknown[], A, B, C, D, E>(
+  f: AsyncFn<Args, A>,
+  g: (a: Awaited<A>) => Promise<B> | B,
+  h: (b: Awaited<B>) => Promise<C> | C,
+  i: (c: Awaited<C>) => Promise<D> | D,
+  j: (d: Awaited<D>) => Promise<E> | E,
+): (...args: Args) => Promise<Awaited<E>>;
+
+export function pipeAsync<Args extends readonly unknown[], A, B, C, D, E, F>(
+  f: AsyncFn<Args, A>,
+  g: (a: Awaited<A>) => Promise<B> | B,
+  h: (b: Awaited<B>) => Promise<C> | C,
+  i: (c: Awaited<C>) => Promise<D> | D,
+  j: (d: Awaited<D>) => Promise<E> | E,
+  k: (e: Awaited<E>) => Promise<F> | F,
+): (...args: Args) => Promise<Awaited<F>>;
+
+export function pipeAsync<Args extends readonly unknown[], A, B, C, D, E, F, G>(
+  f: AsyncFn<Args, A>,
+  g: (a: Awaited<A>) => Promise<B> | B,
+  h: (b: Awaited<B>) => Promise<C> | C,
+  i: (c: Awaited<C>) => Promise<D> | D,
+  j: (d: Awaited<D>) => Promise<E> | E,
+  k: (e: Awaited<E>) => Promise<F> | F,
+  l: (f_: Awaited<F>) => Promise<G> | G,
+): (...args: Args) => Promise<Awaited<G>>;
+
+export function pipeAsync<
+  Args extends readonly unknown[],
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+  H,
+>(
+  f: AsyncFn<Args, A>,
+  g: (a: Awaited<A>) => Promise<B> | B,
+  h: (b: Awaited<B>) => Promise<C> | C,
+  i: (c: Awaited<C>) => Promise<D> | D,
+  j: (d: Awaited<D>) => Promise<E> | E,
+  k: (e: Awaited<E>) => Promise<F> | F,
+  l: (f_: Awaited<F>) => Promise<G> | G,
+  m: (g_: Awaited<G>) => Promise<H> | H,
+): (...args: Args) => Promise<Awaited<H>>;
+
+export function pipeAsync<
+  Args extends readonly unknown[],
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+  H,
+  I,
+>(
+  f: AsyncFn<Args, A>,
+  g: (a: Awaited<A>) => Promise<B> | B,
+  h: (b: Awaited<B>) => Promise<C> | C,
+  i: (c: Awaited<C>) => Promise<D> | D,
+  j: (d: Awaited<D>) => Promise<E> | E,
+  k: (e: Awaited<E>) => Promise<F> | F,
+  l: (f_: Awaited<F>) => Promise<G> | G,
+  m: (g_: Awaited<G>) => Promise<H> | H,
+  n: (h_: Awaited<H>) => Promise<I> | I,
+): (...args: Args) => Promise<Awaited<I>>;
+
+export function pipeAsync<
+  Args extends readonly unknown[],
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+  H,
+  I,
+  J,
+>(
+  f: AsyncFn<Args, A>,
+  g: (a: Awaited<A>) => Promise<B> | B,
+  h: (b: Awaited<B>) => Promise<C> | C,
+  i: (c: Awaited<C>) => Promise<D> | D,
+  j: (d: Awaited<D>) => Promise<E> | E,
+  k: (e: Awaited<E>) => Promise<F> | F,
+  l: (f_: Awaited<F>) => Promise<G> | G,
+  m: (g_: Awaited<G>) => Promise<H> | H,
+  n: (h_: Awaited<H>) => Promise<I> | I,
+  o: (i_: Awaited<I>) => Promise<J> | J,
+): (...args: Args) => Promise<Awaited<J>>;
+
+/**
+ * Fallback overload for async pipes exceeding 10 functions.
+ * Type checking between intermediate functions is not enforced.
+ */
+export function pipeAsync(
+  ...fns: UnaryAsyncFunction[]
+): (...args: unknown[]) => Promise<unknown>;
+
+export function pipeAsync(
+  ...fns: ((...args: unknown[]) => unknown)[]
+): (...args: unknown[]) => Promise<unknown> {
   const len = fns.length;
 
-  if (len > MAX_ASYNC_PIPE_DEPTH) {
-    throw new RangeError(`Async pipe depth exceeds ${MAX_ASYNC_PIPE_DEPTH}`);
+  if (len === 0) {
+    throw new Error('pipeAsync requires at least one function');
   }
 
-  return async (
-    ...args: PipeAsyncParams<Fns>
-  ): Promise<PipeAsyncReturn<Fns>> => {
-    if (len === 1) {
-      // biome-ignore lint/suspicious/noExplicitAny: This is intended
-      return await (fns[0] as any)(...(args as any[]));
-    }
+  if (len === 1) {
+    // biome-ignore lint/style/noNonNullAssertion: Just checked if there is atleast one
+    return async (...args: unknown[]) => await fns[0]!(...args);
+  }
 
-    // Start with leftmost function (index: 0)
-    // biome-ignore lint/suspicious/noExplicitAny: This is intended
-    let result = await (fns[0] as any)(...(args as any[]));
+  return async (...args: unknown[]): Promise<unknown> => {
+    // biome-ignore lint/style/noNonNullAssertion: I know there is at least two
+    let result = await fns[0]!(...args);
 
-    // Iterate forward from 1 to len - 1
     for (let i = 1; i < len; i++) {
-      // biome-ignore lint/style/noNonNullAssertion: We know fns[i] exists because i is within [1, len-1]
+      // biome-ignore lint/style/noNonNullAssertion: Won't run more than it can
       result = await fns[i]!(result);
     }
 
-    return result as PipeAsyncReturn<Fns>;
+    return result;
   };
-};
+}
