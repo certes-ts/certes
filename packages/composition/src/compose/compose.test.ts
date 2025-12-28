@@ -92,16 +92,11 @@ describe('Compose', () => {
       const g = multiply2;
       const h = subtract1;
 
-      // Create intermediate compositions with explicit types
-      // in order to shut TS up.
-      const gh: (x: number) => number = compose(g, h);
-      const fg: (x: number) => number = compose(f, g);
-
       // Left association: f ∘ (g ∘ h)
-      const left = compose(f, gh);
+      const left = compose(f, compose(g, h));
 
       // Right association: (f ∘ g) ∘ h
-      const right = compose(fg, h);
+      const right = compose(compose(f, g), h);
 
       // Direct composition
       const direct = compose(f, g, h);
@@ -120,13 +115,8 @@ describe('Compose', () => {
       const g = multiply2;
       const h = subtract1;
 
-      // Create intermediate compositions with explicit types
-      // in order to shut TS up.
-      const gh: (x: number) => number = compose(g, h);
-      const fg: (x: number) => number = compose(f, g);
-
-      const left = compose(f, gh);
-      const right = compose(fg, h);
+      const left = compose(f, compose(g, h));
+      const right = compose(compose(f, g), h);
 
       const testValues = [-10, -1, 0, 1, 5, 100, 1000];
 
@@ -141,13 +131,8 @@ describe('Compose', () => {
       const g = stringify;
       const h = multiply2;
 
-      // Create intermediate compositions with explicit types
-      // in order to shut TS up.
-      const gh: (x: number) => string = compose(g, h);
-      const fg: (x: number) => string = compose(f, g);
-
-      const left = compose(f, gh);
-      const right = compose(fg, h);
+      const left = compose(f, compose(g, h));
+      const right = compose(compose(f, g), h);
       const direct = compose(f, g, h);
 
       const expected = f(g(h(5))); // '10'
@@ -164,14 +149,9 @@ describe('Compose', () => {
       const f3 = subtract1;
       const f4 = add3;
 
-      // Different manual groupings
-      const f3f4: (x: number) => number = compose(f3, f4);
-      const f2f3f4: (x: number) => number = compose(f2, f3f4);
-      const group1 = compose(f1, f2f3f4);
-
-      const f1f2: (x: number) => number = compose(f1, f2);
-      const group2 = compose(f1f2, f3, f4);
-
+      // Different groupings should produce same result
+      const group1 = compose(f1, compose(f2, compose(f3, f4)));
+      const group2 = compose(compose(f1, f2), f3, f4);
       const direct = compose(f1, f2, f3, f4);
 
       const testValue = 5;

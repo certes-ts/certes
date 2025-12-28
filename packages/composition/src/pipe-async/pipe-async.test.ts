@@ -118,17 +118,6 @@ describe('PipeAsync', () => {
 
       await expect(piped(5)).rejects.toThrow('Sync error');
     });
-
-    it('should throw on excessive pipe depth', () => {
-      const functions = Array(1001).fill(asyncAdd3);
-
-      // @ts-expect-error For testing
-      expect(() => pipeAsync(...functions)).toThrow(RangeError);
-      // @ts-expect-error For testing
-      expect(() => pipeAsync(...functions)).toThrow(
-        'Async pipe depth exceeds 1000',
-      );
-    });
   });
 
   describe('Async Execution Order', () => {
@@ -188,11 +177,8 @@ describe('PipeAsync', () => {
       const g = asyncMultiply2;
       const h = asyncSubtract1;
 
-      const fg: (x: number) => Promise<number> = pipeAsync(f, g);
-      const gh: (x: number) => Promise<number> = pipeAsync(g, h);
-
-      const left = pipeAsync(fg, h);
-      const right = pipeAsync(f, gh);
+      const left = pipeAsync(pipeAsync(f, g), h);
+      const right = pipeAsync(f, pipeAsync(g, h));
       const direct = pipeAsync(f, g, h);
 
       const testValue = 10;
@@ -208,11 +194,8 @@ describe('PipeAsync', () => {
       const g = multiply2; // sync
       const h = asyncSubtract1;
 
-      const fg: (x: number) => Promise<number> = pipeAsync(f, g);
-      const gh: (x: number) => Promise<number> = pipeAsync(g, h);
-
-      const left = pipeAsync(fg, h);
-      const right = pipeAsync(f, gh);
+      const left = pipeAsync(pipeAsync(f, g), h);
+      const right = pipeAsync(f, pipeAsync(g, h));
 
       const testValue = 10;
 

@@ -1,207 +1,25 @@
 import type { UnaryFunction } from '../types';
 
 /**
- * Defines the valid shapes for function arrays that can be composed.
+ * Right-to-left variadic function composition.
  *
- * This union type represents two possible compositions:
- * 1. An array with zero or more unary functions followed by one n-ary function
- * 2. A single n-ary function
- *
- * The `readonly` modifier ensures immutability and enables better type inference
- * with rest/spread patterns. The `...UnaryFunction[]` spread allows for any number
- * of unary functions to precede the final n-ary function.
- */
-type CompositionArray =
-  // biome-ignore lint/suspicious/noExplicitAny: This is intended
-  | readonly [...UnaryFunction[], (...args: any[]) => any]
-  // biome-ignore lint/suspicious/noExplicitAny: This is intended
-  | readonly [(...args: any[]) => any];
-
-/**
- * Extracts the parameter types of the rightmost (last) function in a composition array.
- *
- * This type uses conditional type inference with `infer` to:
- * 1. Pattern match against `readonly [...unknown[], infer Last]` to capture the last element
- * 2. Check if `Last` is a function and extract its parameters with `infer P`
- * 3. Return the parameter tuple type `P`, or `never` if extraction fails
- *
- * The `...unknown[]` spread matches any prefix elements without caring about their types,
- * focusing only on the last element. This follows right-to-left composition semantics
- * where the rightmost function receives the initial arguments.
- *
- * Example:
- * ComposeParams<[(x: string) => number, (a: boolean, b: string) => string]>
- * // Result: [a: boolean, b: string]
- */
-type ComposeParams<Fns extends CompositionArray> = Fns extends readonly [
-  ...unknown[],
-  infer Last,
-]
-  ? // biome-ignore lint/suspicious/noExplicitAny: This is intended
-    Last extends (...args: infer P) => any
-    ? P
-    : never
-  : never;
-
-/**
- * Extracts the return type of the leftmost (first) function in a composition array.
- *
- * This type mirrors ComposeParams but focuses on the first element:
- * 1. Pattern match against `readonly [infer First, ...unknown[]]` to capture the first element
- * 2. Check if `First` is a function and extract its return type with `infer R`
- * 3. Return the return type `R`, or `never` if extraction fails
- *
- * The `...unknown[]` spread ignores all elements after the first. This follows
- * composition semantics where the leftmost function's return type becomes the
- * overall composition's return type.
- *
- * Example:
- * ComposeReturn<[(x: string) => number, (a: boolean) => string]>
- * // Result: number
- */
-type ComposeReturn<Fns extends CompositionArray> = Fns extends readonly [
-  infer First,
-  ...unknown[],
-]
-  ? // biome-ignore lint/suspicious/noExplicitAny: This is intended
-    First extends (...args: any[]) => infer R
-    ? R
-    : never
-  : never;
-
-/**
- * Validates and transforms a function array to ensure valid composition structure.
- *
- * This recursive conditional type enforces that:
- * 1. Base case: A single function (of any arity) is always valid
- * 2. Recursive case: The first function must be unary, and the rest must form a valid composition
- *
- * The constraint system works as follows:
- * - `infer First extends UnaryFunction` ensures the first function is unary
- * - `infer Rest extends CompositionArray` ensures the remaining functions form a valid composition
- * - `readonly [First, ...Composable<Rest>]` recursively validates the tail
- *
- * This prevents invalid compositions like having non-unary functions in non-terminal positions,
- * which would break the composition chain since intermediate functions can only receive one argument.
- *
- * Example transformations:
- * Composable<[(x: number) => string]>
- * // Result: [(x: number) => string]
- *
- * Composable<[(x: string) => number, (a: boolean, b: string) => string]>
- * // Result: [(x: string) => number, (a: boolean, b: string) => string]
- *
- * Invalid example (would result in `never`):
- * Composable<[(a: string, b: number) => boolean, (x: boolean) => string]>
- * // Error: First function is not unary
- */
-type Composable<Fn extends CompositionArray> = Fn extends readonly [
-  // biome-ignore lint/suspicious/noExplicitAny: This is intended
-  (...args: any[]) => any,
-]
-  ? Fn // Base case: single function (can be n-ary)
-  : Fn extends readonly [
-        infer First extends UnaryFunction,
-        ...infer Rest extends CompositionArray,
-      ]
-    ? readonly [First, ...Composable<Rest>]
-    : never;
-
-const MAX_COMPOSITION_DEPTH = 1000;
-
-/**
- * Allows you combine two or more functions to create a new function, which passes the results from one
- * function to the next until all have be called. Has a right-to-left call order.
- *
- * @template Fns - Tuple type of composable functions, where all but the last must be unary
- *
- * @param fns - The functions to compose in right-to-left order
- *
- * @returns A new function accepting the parameters of the rightmost function in `fns`,
- *          returning the return type of the leftmost function in `fns`
+ * Combines two or more functions to create a new function, passing the result
+ * from one function to the next until all have been called. The rightmost
+ * function is applied first to the input arguments.
  *
  * @remarks
- * The implementation follows right-to-left composition semantics:
- * 1. The rightmost function is applied first to the input arguments
- * 2. Each subsequent function (moving left) receives the result of the previous function
- * 3. The leftmost function's result becomes the final output
- *
- * Mathematical notation: (f ∘ g ∘ h)(x) = f(g(h(x)))
+ * Mathematical notation: `(f ∘ g ∘ h)(x) = f(g(h(x)))`
  *
  * Type constraints:
- * - The last function can accept n parameters
+ * - The rightmost (last) function can accept n parameters
  * - All other functions must be unary (single parameter)
- * - Return type of function i must be assignable to parameter of function i-1
+ * - Return type of function `i` must be assignable to parameter of function `i-1`
  *
- * Performance: Maximum composition depth is limited to 1000 functions to prevent stack overflow.
+ * The overload-based signature provides reliable type inference up to 10 functions.
+ * For compositions exceeding 10 functions, nest multiple compose calls.
  *
  * @example
- * // Mathematical composition: (uppercase ∘ stringify ∘ add3)(4)
- * const transform = composeVariadic(uppercase, stringify, add3);
- * transform(4); // Returns "SEVEN"
- *
- * // With n-ary rightmost function
- * const sumAndStringify = composeVariadic(uppercase, stringify, (a: number, b: number) => a + b);
- * sumAndStringify(3, 4); // Returns "SEVEN"
- */
-export const composeVariadic = <Fns extends CompositionArray>(
-  ...fns: Composable<Fns>
-): ((...args: ComposeParams<Fns>) => ComposeReturn<Fns>) => {
-  const len = fns.length;
-
-  if (len > MAX_COMPOSITION_DEPTH) {
-    throw new RangeError(`Composition depth exceeds ${MAX_COMPOSITION_DEPTH}`);
-  }
-
-  return (...args: ComposeParams<Fns>): ComposeReturn<Fns> => {
-    if (len === 1) {
-      // biome-ignore lint/suspicious/noExplicitAny: This is intended
-      return (fns[0] as any)(...(args as any[])) as ComposeReturn<Fns>;
-    }
-
-    // Start with rightmost function (index: len - 1)
-    // biome-ignore lint/suspicious/noExplicitAny: This is intended
-    let result = (fns[len - 1] as any)(...(args as any[]));
-
-    // Iterate backwards from len - 2 to 0
-    for (let i = len - 2; i >= 0; i--) {
-      // biome-ignore lint/style/noNonNullAssertion: We know fns[i] exists because i is within [0, len-2]
-      result = fns[i]!(result);
-    }
-
-    return result as ComposeReturn<Fns>;
-  };
-};
-
-/**
- * @alias composeVariadic
- *
- * Allows you combine two or more functions to create a new function, which passes the results from one
- * function to the next until all have be called. Has a right-to-left call order.
- *
- * @template Fns - Tuple type of composable functions, where all but the last must be unary
- *
- * @param fns - The functions to compose in right-to-left order
- *
- * @returns A new function accepting the parameters of the rightmost function in `fns`,
- *          returning the return type of the leftmost function in `fns`
- *
- * @remarks
- * The implementation follows right-to-left composition semantics:
- * 1. The rightmost function is applied first to the input arguments
- * 2. Each subsequent function (moving left) receives the result of the previous function
- * 3. The leftmost function's result becomes the final output
- *
- * Mathematical notation: (f ∘ g ∘ h)(x) = f(g(h(x)))
- *
- * Type constraints:
- * - The last function can accept n parameters
- * - All other functions must be unary (single parameter)
- * - Return type of function i must be assignable to parameter of function i-1
- *
- * Performance: Maximum composition depth is limited to 1000 functions to prevent stack overflow.
- *
- * @example
+ * ```ts
  * // Mathematical composition: (uppercase ∘ stringify ∘ add3)(4)
  * const transform = compose(uppercase, stringify, add3);
  * transform(4); // Returns "SEVEN"
@@ -209,5 +27,155 @@ export const composeVariadic = <Fns extends CompositionArray>(
  * // With n-ary rightmost function
  * const sumAndStringify = compose(uppercase, stringify, (a: number, b: number) => a + b);
  * sumAndStringify(3, 4); // Returns "SEVEN"
+ * ```
  */
-export const compose = composeVariadic;
+export function compose<Args extends readonly unknown[], B>(
+  f: (...args: Args) => B,
+): (...args: Args) => B;
+
+export function compose<Args extends readonly unknown[], A, B>(
+  f: (a: A) => B,
+  g: (...args: Args) => A,
+): (...args: Args) => B;
+
+export function compose<Args extends readonly unknown[], A, B, C>(
+  f: (b: B) => C,
+  g: (a: A) => B,
+  h: (...args: Args) => A,
+): (...args: Args) => C;
+
+export function compose<Args extends readonly unknown[], A, B, C, D>(
+  f: (c: C) => D,
+  g: (b: B) => C,
+  h: (a: A) => B,
+  i: (...args: Args) => A,
+): (...args: Args) => D;
+
+export function compose<Args extends readonly unknown[], A, B, C, D, E>(
+  f: (d: D) => E,
+  g: (c: C) => D,
+  h: (b: B) => C,
+  i: (a: A) => B,
+  j: (...args: Args) => A,
+): (...args: Args) => E;
+
+export function compose<Args extends readonly unknown[], A, B, C, D, E, F>(
+  f: (e: E) => F,
+  g: (d: D) => E,
+  h: (c: C) => D,
+  i: (b: B) => C,
+  j: (a: A) => B,
+  k: (...args: Args) => A,
+): (...args: Args) => F;
+
+export function compose<Args extends readonly unknown[], A, B, C, D, E, F, G>(
+  f: (f_: F) => G,
+  g: (e: E) => F,
+  h: (d: D) => E,
+  i: (c: C) => D,
+  j: (b: B) => C,
+  k: (a: A) => B,
+  l: (...args: Args) => A,
+): (...args: Args) => G;
+
+export function compose<
+  Args extends readonly unknown[],
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+  H,
+>(
+  f: (g_: G) => H,
+  g: (f_: F) => G,
+  h: (e: E) => F,
+  i: (d: D) => E,
+  j: (c: C) => D,
+  k: (b: B) => C,
+  l: (a: A) => B,
+  m: (...args: Args) => A,
+): (...args: Args) => H;
+
+export function compose<
+  Args extends readonly unknown[],
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+  H,
+  I,
+>(
+  f: (h_: H) => I,
+  g: (g_: G) => H,
+  h: (f_: F) => G,
+  i: (e: E) => F,
+  j: (d: D) => E,
+  k: (c: C) => D,
+  l: (b: B) => C,
+  m: (a: A) => B,
+  n: (...args: Args) => A,
+): (...args: Args) => I;
+
+export function compose<
+  Args extends readonly unknown[],
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+  H,
+  I,
+  J,
+>(
+  f: (i_: I) => J,
+  g: (h_: H) => I,
+  h: (g_: G) => H,
+  i: (f_: F) => G,
+  j: (e: E) => F,
+  k: (d: D) => E,
+  l: (c: C) => D,
+  m: (b: B) => C,
+  n: (a: A) => B,
+  o: (...args: Args) => A,
+): (...args: Args) => J;
+
+/**
+ * Fallback overload for compositions exceeding 10 functions.
+ * Type checking between intermediate functions is not enforced.
+ */
+export function compose(...fns: UnaryFunction[]): UnaryFunction;
+
+export function compose(
+  ...fns: ((...args: unknown[]) => unknown)[]
+): (...args: unknown[]) => unknown {
+  const len = fns.length;
+
+  if (len === 0) {
+    throw new Error('compose requires at least one function');
+  }
+
+  if (len === 1) {
+    // biome-ignore lint/style/noNonNullAssertion: Just checked if there is atleast one
+    return fns[0]!;
+  }
+
+  return (...args: unknown[]): unknown => {
+    // biome-ignore lint/style/noNonNullAssertion: I know there is at least two
+    let result = fns[len - 1]!(...args);
+
+    for (let i = len - 2; i >= 0; i--) {
+      // biome-ignore lint/style/noNonNullAssertion: Won't run more than it can
+      result = fns[i]!(result);
+    }
+
+    return result;
+  };
+}
