@@ -2,6 +2,43 @@ import { describe, expect, it } from 'vitest';
 import { curry } from '.';
 
 describe('Curry', () => {
+  describe('Arity Constraints', () => {
+    it('should throw RangeError for functions with >6 parameters', () => {
+      const fn = (
+        a: unknown,
+        b: unknown,
+        c: unknown,
+        d: unknown,
+        e: unknown,
+        f: unknown,
+        g: unknown,
+      ) => `${a}${b}${c}${d}${e}${f}${g}`;
+
+      // @ts-expect-error For testing
+      expect(() => curry(fn)).toThrow(RangeError);
+      // @ts-expect-error For testing
+      expect(() => curry(fn)).toThrow(
+        'curry only supports functions with 0-6 parameters',
+      );
+    });
+
+    it('should include the actual arity in error message', () => {
+      const fn = (
+        a: unknown,
+        b: unknown,
+        c: unknown,
+        d: unknown,
+        e: unknown,
+        f: unknown,
+        g: unknown,
+        h: unknown,
+      ) => `${a}${b}${c}${d}${e}${f}${g}${h}`;
+
+      // @ts-expect-error For testing
+      expect(() => curry(fn)).toThrow('Received function with 8 parameters');
+    });
+  });
+
   describe('Arity 0 (passthrough)', () => {
     const nullary = (): number => 42;
     const curried = curry(nullary);
