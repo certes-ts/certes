@@ -1,123 +1,272 @@
-export type Curried<T extends unknown[], R> = <P extends Partial<T>>(
-  ...args: P
-  // biome-ignore lint/suspicious/noExplicitAny: This is intended
-) => ((...args: T) => any) extends (...args: [...P, ...infer Args]) => any
-  ? Args extends []
-    ? R
-    : Curried<Args, R>
-  : never;
-
+/** biome-ignore-all lint/complexity/noArguments: This is special, hush now */
+/** biome-ignore-all lint/complexity/useArrowFunction: To preserve `this` */
 /**
- * Curries the given function. Allowing it to accept one or more arguments at a time.
- *
- * @template T - The function to be curried.
- *
- * @param fn - The function to convert to a curried version
- *
- * @returns A curried function that can accept parameters incrementally.
- *          Each partial application returns either:
- *          - Another curried function if more parameters needed
- *          - The final result R if all parameters satisfied
- *
- * @remarks
- * The curried function maintains referential transparency and can be called with:
- * - One argument at a time: autoCurry(f)(a)(b)(c)
- * - Multiple arguments: autoCurry(f)(a, b)(c)
- * - All arguments: autoCurry(f)(a, b, c)
- * - Any combination of the above
- *
- * Arity detection uses Function.prototype.length which counts only non-rest parameters.
- *
- * @example
- * const multiply = (a: number, b: number, c: number): number => a * b * c;
- * const curriedMultiply = autoCurry(multiply);
- *
- * // All equivalent:
- * curriedMultiply(2)(3)(4);     // 24
- * curriedMultiply(2, 3)(4);     // 24
- * curriedMultiply(2)(3, 4);     // 24
- * curriedMultiply(2, 3, 4);     // 24
- *
- * // Partial application for reuse
- * const add = (a: number, b: number, c: number) => a + b + c;
- * const curriedAdd = autoCurry(add);
- * const add10 = curriedAdd(10);
- *
- * add10(5, 3);  // 18
- * add10(2, 8);  // 20
+ * Curried function type for 2-arity functions.
  */
-// biome-ignore lint/suspicious/noExplicitAny: This is intended
-export function autoCurry<T extends (...args: any[]) => any>(
-  fn: T,
-  // biome-ignore lint/suspicious/noExplicitAny: This is intended
-  _args = [] as any[],
-): Curried<Parameters<T>, ReturnType<T>> {
-  return (...__args) => {
-    const argsLen = _args.length;
-    const newArgsLen = __args.length;
-    const totalLen = argsLen + newArgsLen;
-
-    // Only spread when executing, not on partial application
-    if (totalLen >= fn.length) {
-      // Pre-allocate exact size
-      const allArgs = new Array(totalLen);
-
-      // Manual copy is faster than spread for small arrays
-      for (let i = 0; i < argsLen; i++) {
-        allArgs[i] = _args[i];
-      }
-
-      for (let i = 0; i < newArgsLen; i++) {
-        allArgs[argsLen + i] = __args[i];
-      }
-
-      return fn(...allArgs);
-    }
-
-    // For partial application, concat is faster than spread for this use case
-    return autoCurry(fn, _args.concat(__args));
-  };
-}
+type Curried2<A, B, R> = {
+  (a: A): (b: B) => R;
+  (a: A, b: B): R;
+};
 
 /**
- * @alias autoCurry
- *
- * Curries the given function. Allowing it to accept one or more arguments at a time.
- *
- * @template T - The function to be curried.
+ * Curried function type for 3-arity functions.
+ */
+type Curried3<A, B, C, R> = {
+  (a: A): Curried2<B, C, R>;
+  (a: A, b: B): (c: C) => R;
+  (a: A, b: B, c: C): R;
+};
+
+/**
+ * Curried function type for 4-arity functions.
+ */
+type Curried4<A, B, C, D, R> = {
+  (a: A): Curried3<B, C, D, R>;
+  (a: A, b: B): Curried2<C, D, R>;
+  (a: A, b: B, c: C): (d: D) => R;
+  (a: A, b: B, c: C, d: D): R;
+};
+
+/**
+ * Curried function type for 5-arity functions.
+ */
+type Curried5<A, B, C, D, E, R> = {
+  (a: A): Curried4<B, C, D, E, R>;
+  (a: A, b: B): Curried3<C, D, E, R>;
+  (a: A, b: B, c: C): Curried2<D, E, R>;
+  (a: A, b: B, c: C, d: D): (e: E) => R;
+  (a: A, b: B, c: C, d: D, e: E): R;
+};
+
+/**
+ * Curried function type for 6-arity functions.
+ */
+type Curried6<A, B, C, D, E, F, R> = {
+  (a: A): Curried5<B, C, D, E, F, R>;
+  (a: A, b: B): Curried4<C, D, E, F, R>;
+  (a: A, b: B, c: C): Curried3<D, E, F, R>;
+  (a: A, b: B, c: C, d: D): Curried2<E, F, R>;
+  (a: A, b: B, c: C, d: D, e: E): (f: F) => R;
+  (a: A, b: B, c: C, d: D, e: E, f: F): R;
+};
+
+/**
+ * Curries the given function, allowing it to accept one or more arguments at a time.
  *
  * @param fn - The function to convert to a curried version
  *
  * @returns A curried function that can accept parameters incrementally.
  *          Each partial application returns either:
- *          - Another curried function if more parameters needed
- *          - The final result R if all parameters satisfied
+ *          - Another curried function if more parameters are needed
+ *          - The final result if all parameters are satisfied
  *
  * @remarks
- * The curried function maintains referential transparency and can be called with:
- * - One argument at a time: curry(f)(a)(b)(c)
- * - Multiple arguments: curry(f)(a, b)(c)
- * - All arguments: curry(f)(a, b, c)
- * - Any combination of the above
+ * This is an "auto-curry" implementation that allows multiple arguments per call,
+ * unlike traditional Haskell-style currying which accepts exactly one argument at a time.
  *
- * Arity detection uses Function.prototype.length which counts only non-rest parameters.
+ * The implementation uses arity-specialized code paths for functions with 0-6 parameters
+ * to avoid array allocation and achieve optimal performance.
+ *
+ * Arity detection uses `Function.prototype.length` which counts only parameters
+ * before the first one with a default value or rest parameter.
  *
  * @example
+ * ```ts
  * const multiply = (a: number, b: number, c: number): number => a * b * c;
  * const curriedMultiply = curry(multiply);
  *
- * // All equivalent:
- * curriedMultiply(2)(3)(4);     // 24
- * curriedMultiply(2, 3)(4);     // 24
- * curriedMultiply(2)(3, 4);     // 24
- * curriedMultiply(2, 3, 4);     // 24
+ * // All equivalent - returns 24:
+ * curriedMultiply(2)(3)(4);
+ * curriedMultiply(2, 3)(4);
+ * curriedMultiply(2)(3, 4);
+ * curriedMultiply(2, 3, 4);
  *
  * // Partial application for reuse
- * const add = (a: number, b: number, c: number) => a + b + c;
- * const curriedAdd = curry(add);
- * const add10 = curriedAdd(10);
- *
- * add10(5, 3);  // 18
- * add10(2, 8);  // 20
+ * const double = curriedMultiply(2)(1);
+ * double(5);  // 10
+ * double(10); // 20
+ * ```
  */
-export const curry = autoCurry;
+export function curry<R>(fn: () => R): () => R;
+export function curry<A, R>(fn: (a: A) => R): (a: A) => R;
+export function curry<A, B, R>(fn: (a: A, b: B) => R): Curried2<A, B, R>;
+export function curry<A, B, C, R>(
+  fn: (a: A, b: B, c: C) => R,
+): Curried3<A, B, C, R>;
+export function curry<A, B, C, D, R>(
+  fn: (a: A, b: B, c: C, d: D) => R,
+): Curried4<A, B, C, D, R>;
+export function curry<A, B, C, D, E, R>(
+  fn: (a: A, b: B, c: C, d: D, e: E) => R,
+): Curried5<A, B, C, D, E, R>;
+
+export function curry<A, B, C, D, E, F, R>(
+  fn: (a: A, b: B, c: C, d: D, e: E, f: F) => R,
+): Curried6<A, B, C, D, E, F, R>;
+
+// Curried7...
+// NOTE: If you reach this point, you need to refactor your function
+// Probably should have before getting, tbh.
+
+export function curry(
+  fn: (...args: unknown[]) => unknown,
+): (...args: unknown[]) => unknown {
+  switch (fn.length) {
+    case 0:
+    case 1:
+      return fn;
+
+    case 2:
+      return function c2(a: unknown, b: unknown): unknown {
+        return arguments.length >= 2
+          ? fn(a, b)
+          : function (_b: unknown): unknown {
+              return fn(a, _b);
+            };
+      };
+
+    case 3:
+      return function c3(a: unknown, b: unknown, c: unknown): unknown {
+        switch (arguments.length) {
+          case 1:
+            return function c2(_b: unknown, _c: unknown): unknown {
+              return arguments.length >= 2
+                ? fn(a, _b, _c)
+                : function (__c: unknown): unknown {
+                    return fn(a, _b, __c);
+                  };
+            };
+          case 2:
+            return function (_c: unknown): unknown {
+              return fn(a, b, _c);
+            };
+          default:
+            return fn(a, b, c);
+        }
+      };
+
+    case 4:
+      return function c4(
+        a: unknown,
+        b: unknown,
+        c: unknown,
+        d: unknown,
+      ): unknown {
+        switch (arguments.length) {
+          case 1:
+            return curry(function (
+              _b: unknown,
+              _c: unknown,
+              _d: unknown,
+            ): unknown {
+              return fn(a, _b, _c, _d);
+            });
+          case 2:
+            return curry(function (_c: unknown, _d: unknown): unknown {
+              return fn(a, b, _c, _d);
+            });
+          case 3:
+            return function (_d: unknown): unknown {
+              return fn(a, b, c, _d);
+            };
+          default:
+            return fn(a, b, c, d);
+        }
+      };
+
+    case 5:
+      return function c5(
+        a: unknown,
+        b: unknown,
+        c: unknown,
+        d: unknown,
+        e: unknown,
+      ): unknown {
+        switch (arguments.length) {
+          case 1:
+            return curry(function (
+              _b: unknown,
+              _c: unknown,
+              _d: unknown,
+              _e: unknown,
+            ): unknown {
+              return fn(a, _b, _c, _d, _e);
+            });
+          case 2:
+            return curry(function (
+              _c: unknown,
+              _d: unknown,
+              _e: unknown,
+            ): unknown {
+              return fn(a, b, _c, _d, _e);
+            });
+          case 3:
+            return curry(function (_d: unknown, _e: unknown): unknown {
+              return fn(a, b, c, _d, _e);
+            });
+          case 4:
+            return function (_e: unknown): unknown {
+              return fn(a, b, c, d, _e);
+            };
+          default:
+            return fn(a, b, c, d, e);
+        }
+      };
+
+    case 6:
+      return function c6(
+        a: unknown,
+        b: unknown,
+        c: unknown,
+        d: unknown,
+        e: unknown,
+        f: unknown,
+      ): unknown {
+        switch (arguments.length) {
+          case 1:
+            return curry(function (
+              _b: unknown,
+              _c: unknown,
+              _d: unknown,
+              _e: unknown,
+              _f: unknown,
+            ): unknown {
+              return fn(a, _b, _c, _d, _e, _f);
+            });
+          case 2:
+            return curry(function (
+              _c: unknown,
+              _d: unknown,
+              _e: unknown,
+              _f: unknown,
+            ): unknown {
+              return fn(a, b, _c, _d, _e, _f);
+            });
+          case 3:
+            return curry(function (
+              _d: unknown,
+              _e: unknown,
+              _f: unknown,
+            ): unknown {
+              return fn(a, b, c, _d, _e, _f);
+            });
+          case 4:
+            return curry(function (_e: unknown, _f: unknown): unknown {
+              return fn(a, b, c, d, _e, _f);
+            });
+          case 5:
+            return function (_f: unknown): unknown {
+              return fn(a, b, c, d, e, _f);
+            };
+          default:
+            return fn(a, b, c, d, e, f);
+        }
+      };
+
+    default:
+      throw new RangeError(
+        `curry only supports functions with 0-6 parameters. Received function with ${fn.length} parameters. ` +
+          'Consider refactoring to use an options object or composing multiple curried functions.',
+      );
+  }
+}
