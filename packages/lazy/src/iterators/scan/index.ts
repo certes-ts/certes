@@ -1,4 +1,4 @@
-import type { Accumulator } from '@/types';
+import type { Accumulator } from '../../types';
 
 /**
  * Lazily yields intermediate accumulator values during a reduction.

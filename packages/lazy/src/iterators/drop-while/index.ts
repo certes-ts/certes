@@ -1,4 +1,4 @@
-import type { Predicate } from '@/types';
+import type { Predicate } from '../../types';
 
 /**
  * Lazily skips elements while the predicate returns true, then yields the rest.

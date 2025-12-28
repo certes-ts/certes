@@ -1,4 +1,4 @@
-import type { Predicate } from '@/types';
+import type { Predicate } from '../../types';
 
 /**
  * Lazily yields elements while the predicate returns true, then stops.

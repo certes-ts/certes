@@ -14,7 +14,7 @@ const colorTable = {
   FIZZ: [230, 0, 0, 155] as Color,
   BUZZ: [0, 128, 0, 155] as Color,
   TEST: null as unknown as Color,
-};
+} as const;
 
 const defaultColor: Color = [128, 128, 128, 155];
 const colorLookup = lookup(colorTable, defaultVal(defaultColor));

@@ -10,9 +10,6 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "esModuleInterop": true,
     "skipLibCheck": true,
     "target": "es2022",

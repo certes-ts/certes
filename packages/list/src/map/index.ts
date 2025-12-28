@@ -1,4 +1,4 @@
-import type { MapFn } from '@/types';
+import type { MapFn } from '../types';
 
 /**
  * Maps over the given array, calling the mapping function for each element.

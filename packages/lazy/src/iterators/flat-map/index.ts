@@ -1,4 +1,4 @@
-import type { MapFn } from '@/types';
+import type { MapFn } from '../../types';
 
 /**
  * Lazily maps each element to an iterable and flattens the results.

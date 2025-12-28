@@ -1,5 +1,3 @@
-import { or, orFn } from '../or';
-
 /**
  * Logical non-disjunction (NOR) operation. Returns `true` only when both
  * operands are falsy, implementing the negation of Boolean OR.

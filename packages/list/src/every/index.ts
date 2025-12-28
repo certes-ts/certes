@@ -1,4 +1,4 @@
-import type { Comparator } from '@/types';
+import type { Comparator } from '../types';
 
 /**
  * Tests whether all elements in the array pass the given comparator.
