@@ -1,5 +1,11 @@
 # @certes/common
 
+## 0.1.2
+
+### Patch Changes
+
+- e53a16a: Change types for lookup to use function overloads for better type inference
+
 ## 0.1.1
 
 ### Patch Changes
