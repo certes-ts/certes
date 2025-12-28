@@ -1,6 +1,6 @@
 import { compose } from '@certes/composition/compose';
-import { collect } from '@/helpers/collect';
-import { take } from '@/iterators/take';
+import { collect } from '../../helpers/collect';
+import { take } from '../../iterators/take';
 
 /**
  * Takes `n` elements and immediately collects them into an array.

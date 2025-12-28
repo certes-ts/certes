@@ -1,4 +1,4 @@
-import type { Predicate } from '@/types';
+import type { Predicate } from '../types';
 
 /**
  * Returns the first index of the given array that satisfies the predicate.

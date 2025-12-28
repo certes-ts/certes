@@ -1,4 +1,4 @@
-import type { Predicate } from '@/types';
+import type { Predicate } from '../../types';
 
 /**
  * Lazily filters elements of an iterable based on a predicate.

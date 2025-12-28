@@ -1,4 +1,4 @@
-import type { Predicate } from '@/types';
+import type { Predicate } from '../types';
 
 /**
  * Returns a copy of the given array of elements that satisfy the predicate.

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { compose, composeAsync, curry, pipe, pipeAsync } from './';
+import { compose, composeAsync, curry, pipe, pipeAsync } from '.';
 
 describe('README Examples', () => {
   describe('Synchronous Composition', () => {

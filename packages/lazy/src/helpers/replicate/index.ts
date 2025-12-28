@@ -1,4 +1,4 @@
-import { repeat } from '@/generators/repeat';
+import { repeat } from '../../generators/repeat';
 import { take } from '../../iterators/take';
 
 /**

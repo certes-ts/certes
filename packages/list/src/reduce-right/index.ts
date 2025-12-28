@@ -1,4 +1,4 @@
-import type { Accumulator } from '@/types';
+import type { Accumulator } from '../types';
 
 /**
  * Calls the accumulator with each element of the given array, starting with the last element. Returns the final result.

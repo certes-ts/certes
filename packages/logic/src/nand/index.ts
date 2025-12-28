@@ -1,5 +1,3 @@
-import { and, andFn } from '../and';
-
 /**
  * Logical non-conjunction (NAND) operation. Returns `false` only when both
  * operands are truthy, implementing the negation of Boolean AND.

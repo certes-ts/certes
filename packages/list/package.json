@@ -61,8 +61,7 @@
     "build": "pnpm tsdown",
     "format": "pnpm biome check --write",
     "lint": "pnpm biome lint",
-    "test": "pnpm vitest --dir=src",
-    "test:types": "pnpm vitest --typecheck"
+    "test": "pnpm vitest --dir=src --typecheck"
   },
   "devDependencies": {
     "@vitest/coverage-istanbul": "^4.0.8",
